@@ -88,15 +88,7 @@ if ($method === 'GET') {
             ];
         }
         
-        // Add hardcoded hospitals if list is empty or just for demo
-        if (empty($threads)) {
-            $threads = [
-                ['id' => 'h1', 'partner_name' => 'Apollo Hospital', 'partner_phone' => 'Apollo Hospital', 'partner_type' => 'hospital', 'last_message' => 'Hello! Welcome to Apollo Hospital.', 'created_at' => date('Y-m-d H:i:s')],
-                ['id' => 'h2', 'partner_name' => 'Vadamalayan Hospital', 'partner_phone' => 'Vadamalayan Hospital', 'partner_type' => 'hospital', 'last_message' => 'Hello! Welcome to Vadamalayan Hospital.', 'created_at' => date('Y-m-d H:i:s')],
-                ['id' => 'h3', 'partner_name' => 'Meenakshi Mission', 'partner_phone' => 'Meenakshi Mission', 'partner_type' => 'hospital', 'last_message' => 'Hello! Welcome to Meenakshi Mission.', 'created_at' => date('Y-m-d H:i:s')]
-            ];
-        }
-        
+        // No hardcoded hospitals if list is empty
         echo json_encode(['status' => 'success', 'data' => $threads]);
     } catch (PDOException $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

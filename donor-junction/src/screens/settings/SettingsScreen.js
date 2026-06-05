@@ -84,32 +84,8 @@ export const LocationSettingsScreen = ({ navigation }) => {
 };
 
 export const NotificationsScreen = ({ navigation }) => {
-  const [newRequests, setNewRequests] = useState(true);
-  const [urgentAlerts, setUrgentAlerts] = useState(true);
-  const [chatMessages, setChatMessages] = useState(true);
-  const [reminders, setReminders] = useState(true);
-
-  useEffect(() => {
-    loadSettings();
-  }, []);
-
-  const loadSettings = async () => {
-    try {
-      const nr = await AsyncStorage.getItem('newRequests');
-      const ua = await AsyncStorage.getItem('urgentAlerts');
-      const cm = await AsyncStorage.getItem('chatMessages');
-      const rm = await AsyncStorage.getItem('reminders');
-      if (nr !== null) setNewRequests(JSON.parse(nr));
-      if (ua !== null) setUrgentAlerts(JSON.parse(ua));
-      if (cm !== null) setChatMessages(JSON.parse(cm));
-      if (rm !== null) setReminders(JSON.parse(rm));
-    } catch (e) { }
-  };
-
-  const saveSetting = async (key, value, setter) => {
-    setter(value);
-    await AsyncStorage.setItem(key, JSON.stringify(value));
-  };
+  // Empty notifications array for now until a backend endpoint is ready
+  const notifications = [];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -119,40 +95,29 @@ export const NotificationsScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.topBarTitle}>Notifications</Text>
       </View>
-      <View style={{ padding: 20 }}>
-        <View style={styles.settingsRow}>
-          <Text style={styles.settingsRowText}>New requests near you</Text>
-          <Switch
-            value={newRequests}
-            onValueChange={(v) => saveSetting('newRequests', v, setNewRequests)}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
-          />
-        </View>
-        <View style={styles.settingsRow}>
-          <Text style={styles.settingsRowText}>Urgent alerts</Text>
-          <Switch
-            value={urgentAlerts}
-            onValueChange={(v) => saveSetting('urgentAlerts', v, setUrgentAlerts)}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
-          />
-        </View>
-        <View style={styles.settingsRow}>
-          <Text style={styles.settingsRowText}>Chat messages</Text>
-          <Switch
-            value={chatMessages}
-            onValueChange={(v) => saveSetting('chatMessages', v, setChatMessages)}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
-          />
-        </View>
-        <View style={styles.settingsRow}>
-          <Text style={styles.settingsRowText}>Donation reminders</Text>
-          <Switch
-            value={reminders}
-            onValueChange={(v) => saveSetting('reminders', v, setReminders)}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
-          />
-        </View>
-      </View>
+      <ScrollView style={{ padding: 15 }} contentContainerStyle={notifications.length === 0 ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : {}}>
+        {notifications.length === 0 ? (
+          <View style={{ alignItems: 'center', marginTop: 50 }}>
+            <Ionicons name="notifications-off-outline" size={60} color="#ccc" />
+            <Text style={{ marginTop: 15, fontSize: 16, color: '#999' }}>No new notifications yet</Text>
+          </View>
+        ) : (
+          notifications.map((notif) => (
+            <View key={notif.id} style={{ flexDirection: 'row', backgroundColor: '#fff', padding: 15, borderRadius: 10, marginBottom: 15, elevation: 2 }}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#FFF0F0', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
+                <Ionicons name={notif.icon} size={20} color={PRIMARY_COLOR} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#333' }}>{notif.title}</Text>
+                  <Text style={{ fontSize: 12, color: '#999' }}>{notif.time}</Text>
+                </View>
+                <Text style={{ color: '#666', lineHeight: 20 }}>{notif.message}</Text>
+              </View>
+            </View>
+          ))
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };

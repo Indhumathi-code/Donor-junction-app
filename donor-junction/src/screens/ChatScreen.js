@@ -10,11 +10,7 @@ const ChatScreen = ({ navigation, route }) => {
   const user = route.params?.user || { name: 'Donor' };
   const donor = route.params?.donor;
 
-  const [threads, setThreads] = useState([
-    { id: '1', name: 'Apollo Hospital', lastMessage: 'Hello! Welcome to Apollo Hospital. How can we assist you with blood donation today?', time: '9:49 AM', unread: 0, online: true },
-    { id: '2', name: 'Vadamalayan Hospital', lastMessage: 'Hello! Welcome to Vadamalayan Hospital. How can we assist you with blood donation today?', time: 'Yesterday', unread: 0, online: false },
-    { id: '3', name: 'Meenakshi Mission', lastMessage: 'Hello! Welcome to Meenakshi Mission. How can we assist you with blood donation today?', time: 'Monday', unread: 0, online: true },
-  ]);
+  const [threads, setThreads] = useState([]);
 
   const [currentUser, setCurrentUser] = useState(user);
 
@@ -148,6 +144,13 @@ const ChatScreen = ({ navigation, route }) => {
       <FlatList
         data={threads}
         keyExtractor={item => item.id}
+        contentContainerStyle={threads.length === 0 ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : {}}
+        ListEmptyComponent={
+          <View style={{ alignItems: 'center', padding: 20 }}>
+            <Ionicons name="chatbubbles-outline" size={60} color="#ccc" />
+            <Text style={{ marginTop: 15, fontSize: 16, color: '#999' }}>No conversations yet</Text>
+          </View>
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.chatListItem}
