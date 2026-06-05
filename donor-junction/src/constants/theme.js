@@ -11,7 +11,7 @@ export const COLORS = {
   INFO: '#0C447C'
 };
 
-const activeIp = '192.168.1.33';
+const activeIp = '192.168.1.33 ';
 
 export const API_URL = Platform.OS === 'web'
   ? 'http://localhost/Donarjunction/backend-full'
