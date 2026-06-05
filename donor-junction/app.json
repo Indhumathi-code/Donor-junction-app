@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "donor-junction",
+    "slug": "donor-junction",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/images/new_logo.png",
+    "scheme": "donorjunction",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.indhumathi.donorjunction",
+      "usesCleartextTraffic": true,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyD_yQrHVPX_7bIwWgzX_XU1v1QC3387FYw"
+        }
+      },
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./src/assets/images/new_logo.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./src/assets/images/new_logo.png"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./src/assets/images/transparent.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "backgroundColor": "#ffffff"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "reactCompiler": true
+    }
+  }
+}

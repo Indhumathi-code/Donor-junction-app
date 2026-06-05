@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Donor Junction Hub",
+    "slug": "donor-junction-hub",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#DA0037"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.donorjunction.hub"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#DA0037"
+      },
+      "package": "com.donorjunction.hub"
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
+    }
+  }
+}

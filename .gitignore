@@ -1,0 +1,52 @@
+# Node dependencies
+node_modules/
+.expo/
+.vscode/
+.kotlin/
+
+# Build outputs
+dist/
+build/
+web-build/
+.gradle/
+.idea/
+.cxx/
+expo-env.d.ts
+*.tsbuildinfo
+*.jsbundle
+local.properties
+*.iml
+*.hprof
+
+# PHP specific
+.phpunit.result.cache
+
+# Logs
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Native keys and certificates
+*.jks
+*.p8
+*.p12
+*.key
+*.pem
+*.mobileprovision
+*.orig.*
+
+# Metro
+.metro-health-check*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# local env files
+.env*.local
+
+# App specific generated folders
+ios/
+android/
+app-example/
