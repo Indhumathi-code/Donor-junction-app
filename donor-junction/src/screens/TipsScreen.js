@@ -172,14 +172,14 @@ const TipsScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={[styles.container, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%' }]} edges={['top', 'right', 'bottom', 'left']}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <StatusBar barStyle="light-content" backgroundColor="#DA0037" />
 
       {/* Top Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: '#DA0037', borderBottomWidth: 0 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color="#DA0037" />
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Health Tips</Text>
+        <Text style={[styles.headerTitle, { color: '#FFFFFF' }]}>Health Tips</Text>
         <View style={{ width: 24 }} /> {/* Balancer */}
       </View>
 
@@ -229,11 +229,11 @@ const TipsScreen = ({ navigation }) => {
       >
         <SafeAreaView style={[styles.modalOverlay, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%' }]} edges={['top', 'right', 'bottom', 'left']}>
           {/* Modal Header */}
-          <View style={styles.modalHeader}>
+          <View style={[styles.modalHeader, { backgroundColor: '#DA0037', borderBottomWidth: 0 }]}>
             <TouchableOpacity onPress={() => setSelectedItem(null)} style={styles.modalBackBtn}>
-              <Ionicons name="arrow-back" size={24} color="#333" />
+              <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
             </TouchableOpacity>
-            <Text style={styles.modalHeaderTitle}>Health Tips</Text>
+            <Text style={[styles.modalHeaderTitle, { color: '#FFFFFF' }]}>Health Tips</Text>
             <View style={{ width: 24 }} /> {/* Balancer */}
           </View>
 

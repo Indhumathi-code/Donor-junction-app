@@ -57,6 +57,147 @@ const getImageSource = (image) => {
   return { uri: `${cleanApiUrl}/${imgStr}` };
 };
 
+const PostCard = ({ item, loggedInMobile, loggedInName, isOwnPost, handleDeletePost, handleShare, navigation }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const authorName = item.author_name || (isOwnPost(item.mobile, item.title) && loggedInName ? loggedInName : 'Blood Donor');
+  const postDate = formatDate(item.created_at);
+  const imageSrc = getImageSource(item.image);
+  const avatarSrc = getImageSource(item.author_avatar);
+
+  // Show placeholder if no image exists, if image loading errored out, or while image is loading
+  const showPlaceholder = !imageSrc || imageError || !imageLoaded;
+
+  return (
+    <View style={styles.postContainer}>
+      {/* Author Header */}
+      <View style={styles.authorHeader}>
+        <View style={styles.authorInfo}>
+          {avatarSrc ? (
+            <Image 
+              source={avatarSrc} 
+              style={styles.avatar} 
+            />
+          ) : (
+            <View style={[styles.avatar, styles.avatarPlaceholder]}>
+              <Ionicons name="person" size={20} color="#9CA3AF" />
+            </View>
+          )}
+          <Text style={styles.authorName}>{authorName}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          {isOwnPost(item.mobile, item.title) && (
+            <TouchableOpacity 
+              style={styles.deleteButton} 
+              onPress={() => handleDeletePost(item.id)}
+            >
+              <Ionicons name="trash-outline" size={18} color="#DA0037" />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.shareButton} onPress={() => handleShare(item)}>
+            <Ionicons name="share-social" size={18} color="#111111" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Instagram Style Post Card */}
+      <View style={styles.instagramCard}>
+        <View style={styles.postImageContainer}>
+          {showPlaceholder ? (
+            <View style={styles.postImagePlaceholder}>
+              <Ionicons name="water" size={48} color="#FFFFFF" style={{ marginBottom: 4 }} />
+              <Text style={styles.placeholderBloodGroup}>
+                {item.blood_group ? String(item.blood_group).toUpperCase() : 'B+'}
+              </Text>
+              <Text style={styles.placeholderText}>Blood Request</Text>
+            </View>
+          ) : null}
+
+          {imageSrc && !imageError ? (
+            <Image 
+              source={imageSrc} 
+              style={[styles.postImage, showPlaceholder ? { width: 0, height: 0, position: 'absolute' } : {}]} 
+              resizeMode="cover"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => {
+                console.log("Failed to load image, displaying placeholder instead:", imageSrc.uri);
+                setImageError(true);
+              }}
+            />
+          ) : null}
+
+          {/* Floating badge over image (shown only when image loaded successfully) */}
+          {!showPlaceholder ? (
+            <View style={{
+              position: 'absolute',
+              top: 12,
+              right: 12,
+              backgroundColor: item.type === 'urgent' ? '#DA0037' : '#27500A',
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 20,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+            }}>
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 13 }}>
+                {item.blood_group ? String(item.blood_group).toUpperCase() : 'B+'} • {item.type ? String(item.type).toUpperCase() : 'NORMAL'}
+              </Text>
+            </View>
+          ) : null}
+        </View>
+
+        {/* Actions Row */}
+        <View style={styles.actionsRow}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
+            <TouchableOpacity onPress={() => {
+              if (item.mobile) {
+                navigation.navigate('ChatRoom', { 
+                  hospitalName: item.author_name || 'Blood Poster', 
+                  partnerMobile: item.mobile,
+                  partnerType: 'user',
+                  online: true, 
+                  user: { mobile: loggedInMobile, name: loggedInName } 
+                });
+              }
+            }}>
+              <Ionicons name="chatbubble-outline" size={22} color="#111" />
+            </TouchableOpacity>
+          </View>
+          
+          <TouchableOpacity 
+            style={styles.scheduleBtn}
+            onPress={() => navigation.navigate('Schedule', { post: item })}
+          >
+            <Text style={styles.scheduleBtnText}>Schedule</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Details Area */}
+        <View style={styles.detailsContainer}>
+          <Text style={styles.captionText}>
+            <Text style={styles.captionAuthor}>{authorName} </Text>
+            We need {item.units_needed || '1'} units of {item.blood_group || 'B+'} blood group
+          </Text>
+          
+          {item.description ? (
+            <Text style={styles.descText}>{item.description}</Text>
+          ) : null}
+
+          <View style={styles.locationRow}>
+            <Ionicons name="location-outline" size={14} color="#666" style={{ marginRight: 4 }} />
+            <Text style={styles.locationText}>{item.location}</Text>
+          </View>
+
+          <Text style={styles.postDateText}>{postDate} .</Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+
 const PostsScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -255,7 +396,7 @@ const PostsScreen = ({ navigation, route }) => {
           onPress={() => navigation.navigate('CreatePost', { fromScreen: 'Posts' })}
           style={styles.headerRightBtn}
         >
-          <Ionicons name="images-outline" size={24} color="#FFFFFF" />
+          <Ionicons name="add" size={28} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
@@ -268,135 +409,17 @@ const PostsScreen = ({ navigation, route }) => {
           refreshing={refreshing}
           onRefresh={handleRefresh}
           contentContainerStyle={{ paddingVertical: 15 }}
-          renderItem={({ item }) => {
-            const authorName = item.author_name || 'praveen';
-            const postDate = formatDate(item.created_at);
-            const imageSrc = getImageSource(item.image);
-
-            return (
-              <View style={styles.postContainer}>
-                {/* Author Header */}
-                <View style={styles.authorHeader}>
-                  <View style={styles.authorInfo}>
-                    <Image 
-                      source={{ uri: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop' }} 
-                      style={styles.avatar} 
-                    />
-                    <Text style={styles.authorName}>{authorName}</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                    {isOwnPost(item.mobile, item.title) && (
-                      <TouchableOpacity 
-                        style={styles.deleteButton} 
-                        onPress={() => handleDeletePost(item.id)}
-                      >
-                        <Ionicons name="trash-outline" size={18} color="#DA0037" />
-                      </TouchableOpacity>
-                    )}
-                    <TouchableOpacity style={styles.shareButton} onPress={() => handleShare(item)}>
-                      <Ionicons name="share-social" size={18} color="#111111" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                {imageSrc ? (
-                  /* Instagram Style Post Card */
-                  <View style={styles.instagramCard}>
-                    <View style={styles.postImageContainer}>
-                      <Image 
-                        source={imageSrc} 
-                        style={styles.postImage} 
-                        resizeMode="cover"
-                      />
-                      {/* Floating Blood Group Badge */}
-                      <View style={{
-                        position: 'absolute',
-                        top: 12,
-                        right: 12,
-                        backgroundColor: item.type === 'urgent' ? '#DA0037' : '#27500A',
-                        paddingHorizontal: 12,
-                        paddingVertical: 6,
-                        borderRadius: 20,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.25,
-                        shadowRadius: 3.84,
-                        elevation: 5,
-                      }}>
-                        <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 13 }}>
-                          {item.blood_group ? String(item.blood_group).toUpperCase() : 'B+'} • {item.type ? String(item.type).toUpperCase() : 'NORMAL'}
-                        </Text>
-                      </View>
-                    </View>
-
-                    {/* Actions Row */}
-                    <View style={styles.actionsRow}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
-                        <TouchableOpacity>
-                          <Ionicons name="heart-outline" size={24} color="#111" />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                          if (item.mobile) {
-                            navigation.navigate('ChatRoom', { 
-                              hospitalName: item.author_name || 'Blood Poster', 
-                              partnerMobile: item.mobile,
-                              partnerType: 'user',
-                              online: true, 
-                              user: { mobile: loggedInMobile, name: loggedInName } 
-                            });
-                          }
-                        }}>
-                          <Ionicons name="chatbubble-outline" size={22} color="#111" />
-                        </TouchableOpacity>
-                      </View>
-                      
-                      <TouchableOpacity 
-                        style={styles.scheduleBtn}
-                        onPress={() => navigation.navigate('Schedule', { post: item })}
-                      >
-                        <Text style={styles.scheduleBtnText}>Schedule</Text>
-                      </TouchableOpacity>
-                    </View>
-
-                    {/* Details Area */}
-                    <View style={styles.detailsContainer}>
-                      <Text style={styles.captionText}>
-                        <Text style={styles.captionAuthor}>{authorName} </Text>
-                        We need {item.units_needed || '1'} units of {item.blood_group || 'B+'} blood group
-                      </Text>
-                      
-                      {item.description ? (
-                        <Text style={styles.descText}>{item.description}</Text>
-                      ) : null}
-
-                      <View style={styles.locationRow}>
-                        <Ionicons name="location-outline" size={14} color="#666" style={{ marginRight: 4 }} />
-                        <Text style={styles.locationText}>{item.location}</Text>
-                      </View>
-
-                      <Text style={styles.postDateText}>{postDate} .</Text>
-                    </View>
-                  </View>
-                ) : (
-                  /* Pink Request Card (when user did not upload an image) */
-                  <TouchableOpacity
-                    style={styles.pinkCard}
-                    onPress={() => navigation.navigate('Schedule', { post: item })}
-                    activeOpacity={0.9}
-                  >
-                    <Text style={styles.pinkCardTitle}>
-                      We need {item.units_needed || '1'} units of {item.blood_group || 'B+'} blood group
-                    </Text>
-                    <Text style={styles.pinkCardDate}>{postDate} .</Text>
-                    <Text style={styles.pinkCardSub}>{item.location}</Text>
-                    {item.description ? (
-                      <Text style={styles.pinkCardDesc}>{item.description}</Text>
-                    ) : null}
-                  </TouchableOpacity>
-                )}
-              </View>
-            );
-          }}
+          renderItem={({ item }) => (
+            <PostCard 
+              item={item}
+              loggedInMobile={loggedInMobile}
+              loggedInName={loggedInName}
+              isOwnPost={isOwnPost}
+              handleDeletePost={handleDeletePost}
+              handleShare={handleShare}
+              navigation={navigation}
+            />
+          )}
           style={{ flex: 1 }}
         />
       )}
@@ -456,6 +479,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#FAF5F6',
   },
+  avatarPlaceholder: {
+    backgroundColor: '#E5E7EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   authorName: {
     fontSize: 14,
     fontWeight: '600',
@@ -498,6 +526,29 @@ const styles = StyleSheet.create({
   postImage: {
     width: '100%',
     height: '100%',
+  },
+  postImagePlaceholder: {
+    width: '100%',
+    height: 300,
+    backgroundColor: '#FF4A70',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderBloodGroup: {
+    fontSize: 70,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textShadowColor: 'rgba(0, 0, 0, 0.15)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+  placeholderText: {
+    fontSize: 15,
+    color: '#FFFFFF',
+    fontWeight: '600',
+    opacity: 0.9,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   actionsRow: {
     flexDirection: 'row',
