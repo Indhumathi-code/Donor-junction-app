@@ -5,7 +5,7 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
 
 $host = "127.0.0.1";
-$port = "3307";
+$port = "3303";
 $username = "root";
 $password = "";
 
@@ -15,8 +15,8 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Create database
-    $conn->exec("CREATE DATABASE IF NOT EXISTS `donor-junction`");
-    $conn->exec("USE `donor-junction`");
+    $conn->exec("CREATE DATABASE IF NOT EXISTS `donor_junction`");
+    $conn->exec("USE `donor_junction`");
     
     // Create otps table
     $conn->exec("CREATE TABLE IF NOT EXISTS otps (

@@ -2,15 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image, Modal, StyleSheet, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { styles as globalStyles } from '../styles/globalStyles';
-import { COLORS } from '../constants/theme';
-
-const { width } = Dimensions.get('window');
 
 const TipsScreen = ({ navigation }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // Curated list of 10 Healthy Blood-Boosting Foods (Fruits, Vegetables & Healthy Non-Veg)
+  // Original curated list of 10 Healthy Blood-Boosting Foods (restored)
   const nutritionTips = [
     {
       id: 1,
@@ -175,58 +171,53 @@ const TipsScreen = ({ navigation }) => {
   ];
 
   return (
-    <SafeAreaView style={globalStyles.container} edges={['right', 'bottom', 'left']}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.PRIMARY} />
-      
+    <SafeAreaView style={[styles.container, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%' }]} edges={['top', 'right', 'bottom', 'left']}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+
       {/* Top Header */}
-      <View style={globalStyles.topBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={24} color="#DA0037" />
         </TouchableOpacity>
-        <Text style={globalStyles.topBarTitle}>Health tips</Text>
-        <Text style={globalStyles.topBarSub}>Blood-Boosting Foods & Wellness</Text>
+        <Text style={styles.headerTitle}>Health Tips</Text>
+        <View style={{ width: 24 }} /> {/* Balancer */}
       </View>
 
-      {/* Main Grid View */}
-      <ScrollView style={{ flex: 1, marginTop: 10 }} contentContainerStyle={{ paddingBottom: 25 }}>
-        <Text style={localStyles.tabHeaderTitle}>Essential Blood-Boosting Foods</Text>
-        <Text style={localStyles.tabHeaderSubtitle}>Tap any card to view detailed health benefits and tips.</Text>
-        
-        <View style={localStyles.gridContainer}>
-          {nutritionTips.map((item) => {
-            const isRemoteUrl = typeof item.image === 'string' && (item.image.startsWith('http://') || item.image.startsWith('https://'));
-            const imageSrc = isRemoteUrl ? { uri: item.image } : item.image;
-            const isLocalAsset = !isRemoteUrl;
-            return (
-              <TouchableOpacity 
-                key={item.id} 
-                style={localStyles.fruitCard}
-                onPress={() => setSelectedItem(item)}
-                activeOpacity={0.85}
-              >
-                <View style={[localStyles.cardImageContainer, isLocalAsset && { backgroundColor: '#F9FAFB' }]}>
-                  <Image 
-                    source={imageSrc} 
-                    style={localStyles.cardImage} 
-                    resizeMode={isLocalAsset ? "contain" : "cover"} 
-                  />
-                </View>
-                <View style={localStyles.cardContent}>
-                  <View style={localStyles.badgeRow}>
-                    <View style={[localStyles.typeBadge, { backgroundColor: item.badgeColor }]}>
-                      <Text style={localStyles.typeText}>{item.type}</Text>
-                    </View>
-                    <View style={localStyles.tagBadge}>
-                      <Text style={localStyles.tagText}>{item.tag}</Text>
-                    </View>
+      {/* Main List View */}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingVertical: 15 }}>
+        {nutritionTips.map((item) => {
+          const isRemoteUrl = typeof item.image === 'string' && (item.image.startsWith('http://') || item.image.startsWith('https://'));
+          const imageSrc = isRemoteUrl ? { uri: item.image } : item.image;
+          const isLocalAsset = !isRemoteUrl;
+          return (
+            <TouchableOpacity
+              key={item.id}
+              style={styles.card}
+              onPress={() => setSelectedItem(item)}
+              activeOpacity={0.85}
+            >
+              <View style={[styles.cardImageContainer, isLocalAsset && { backgroundColor: '#F9FAFB' }]}>
+                <Image
+                  source={imageSrc}
+                  style={styles.cardImage}
+                  resizeMode={isLocalAsset ? "contain" : "cover"}
+                />
+              </View>
+              <View style={styles.cardContent}>
+                <View style={styles.badgeRow}>
+                  <View style={[styles.typeBadge, { backgroundColor: item.badgeColor }]}>
+                    <Text style={styles.typeText}>{item.type}</Text>
                   </View>
-                  <Text style={localStyles.cardTitle} numberOfLines={1}>{item.name}</Text>
-                  <Text style={localStyles.cardTeaser} numberOfLines={2}>{item.teaser}</Text>
+                  <View style={styles.tagBadge}>
+                    <Text style={styles.tagText}>{item.tag}</Text>
+                  </View>
                 </View>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+                <Text style={styles.cardTitle} numberOfLines={1}>{item.name}</Text>
+                <Text style={styles.cardTeaser} numberOfLines={2}>{item.teaser}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
 
       {/* Full Screen Details Modal */}
@@ -236,134 +227,147 @@ const TipsScreen = ({ navigation }) => {
         transparent={false}
         onRequestClose={() => setSelectedItem(null)}
       >
-        <SafeAreaView style={localStyles.modalOverlay} edges={['top', 'right', 'bottom', 'left']}>
-          <View style={localStyles.modalContent}>
-            {selectedItem && (
-              <>
+        <SafeAreaView style={[styles.modalOverlay, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%' }]} edges={['top', 'right', 'bottom', 'left']}>
+          {/* Modal Header */}
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={() => setSelectedItem(null)} style={styles.modalBackBtn}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.modalHeaderTitle}>Health Tips</Text>
+            <View style={{ width: 24 }} /> {/* Balancer */}
+          </View>
+
+          {selectedItem && (
+            <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+              {/* Centered Image */}
+              <View style={styles.detailImageContainer}>
                 {(() => {
                   const isModalRemoteUrl = typeof selectedItem.image === 'string' && (selectedItem.image.startsWith('http://') || selectedItem.image.startsWith('https://'));
                   const modalImageSrc = isModalRemoteUrl ? { uri: selectedItem.image } : selectedItem.image;
                   return (
-                    <View style={[localStyles.modalImageContainer, !isModalRemoteUrl && { backgroundColor: '#F9FAFB' }]}>
-                      <Image 
-                        source={modalImageSrc} 
-                        style={localStyles.modalImage} 
-                        resizeMode={isModalRemoteUrl ? "cover" : "contain"} 
-                      />
-                      <TouchableOpacity 
-                        style={localStyles.closeBtn} 
-                        onPress={() => setSelectedItem(null)}
-                      >
-                        <Ionicons name="close" size={24} color="#fff" />
-                      </TouchableOpacity>
-                    </View>
+                    <Image
+                      source={modalImageSrc}
+                      style={styles.detailImage}
+                      resizeMode={isModalRemoteUrl ? "cover" : "contain"}
+                    />
                   );
                 })()}
-                
-                <ScrollView style={localStyles.modalBody} showsVerticalScrollIndicator={false}>
-                  <View style={localStyles.modalHeaderRow}>
-                    <View style={[localStyles.typeBadge, { backgroundColor: selectedItem.badgeColor, paddingHorizontal: 10, paddingVertical: 4 }]}>
-                      <Text style={[localStyles.typeText, { fontSize: 11 }]}>{selectedItem.type}</Text>
-                    </View>
-                    <View style={[localStyles.tagBadge, { paddingHorizontal: 10, paddingVertical: 4 }]}>
-                      <Text style={[localStyles.tagText, { fontSize: 11 }]}>{selectedItem.tag}</Text>
-                    </View>
-                  </View>
+              </View>
 
-                  <Text style={localStyles.modalTitle}>{selectedItem.name}</Text>
-                  <Text style={{ fontSize: 14, color: '#4B5563', lineHeight: 20 }}>{selectedItem.teaser}</Text>
+              {/* Title */}
+              <Text style={styles.detailTitle}>{selectedItem.name}</Text>
 
-                  {/* Nutrient Bar */}
-                  <View style={localStyles.nutrientBar}>
-                    <Ionicons name="nutrition" size={18} color={selectedItem.badgeColor} style={{ marginRight: 8 }} />
-                    <Text style={localStyles.nutrientLabel}>Key Nutrients:</Text>
-                    <Text style={localStyles.nutrientVal}>{selectedItem.nutrient}</Text>
-                  </View>
+              {/* Description Paragraphs */}
+              <View style={styles.paragraphsContainer}>
+                {/* Teaser */}
+                <Text style={styles.paragraphText}>{selectedItem.teaser}</Text>
 
-                  <Text style={localStyles.sectionSubtitle}>Health Tips & Benefits</Text>
-                  
-                  {selectedItem.benefits.map((benefit, index) => (
-                    <View key={index} style={localStyles.benefitItem}>
-                      <Text style={[localStyles.benefitBullet, { color: selectedItem.badgeColor }]}>✓</Text>
-                      <Text style={localStyles.benefitText}>{benefit}</Text>
-                    </View>
-                  ))}
-                  
-                  <View style={{ height: 40 }} />
-                </ScrollView>
-              </>
-            )}
-          </View>
+                {/* Key Nutrients */}
+                <View style={styles.nutrientBar}>
+                  <Ionicons name="nutrition" size={18} color={selectedItem.badgeColor} style={{ marginRight: 8 }} />
+                  <Text style={styles.nutrientLabel}>Key Nutrients: </Text>
+                  <Text style={styles.nutrientVal}>{selectedItem.nutrient}</Text>
+                </View>
+
+                {/* Benefits as Paragraphs */}
+                {selectedItem.benefits.map((benefit, idx) => (
+                  <Text key={idx} style={styles.paragraphText}>
+                    {benefit}
+                  </Text>
+                ))}
+              </View>
+            </ScrollView>
+          )}
         </SafeAreaView>
       </Modal>
     </SafeAreaView>
   );
 };
 
-const localStyles = StyleSheet.create({
-  tabHeaderTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    paddingHorizontal: 15,
-    marginTop: 5,
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF9FA',
   },
-  tabHeaderSubtitle: {
-    fontSize: 13,
-    color: '#6B7280',
-    paddingHorizontal: 15,
-    marginTop: 2,
-    marginBottom: 15,
-  },
-  gridContainer: {
+  header: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 15,
-  },
-  fruitCard: {
-    width: '48%',
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    marginBottom: 15,
-    overflow: 'hidden',
-    elevation: 3,
+    height: 56,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+    elevation: 2,
     shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  backBtn: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#DA0037',
+    textAlign: 'center',
+  },
+  card: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    marginHorizontal: 15,
+    marginBottom: 15,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#F3EAEB',
+    // Shadow
+    shadowColor: '#DA0037',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.04,
     shadowRadius: 5,
+    elevation: 2,
   },
   cardImageContainer: {
-    width: '100%',
-    height: 110,
+    width: 90,
+    height: 90,
+    borderRadius: 12,
     overflow: 'hidden',
+    backgroundColor: '#FAF5F6',
+    borderWidth: 1,
+    borderColor: '#F3EAEB',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cardImage: {
     width: '100%',
     height: '100%',
   },
   cardContent: {
-    padding: 12,
+    flex: 1,
+    marginLeft: 15,
+    justifyContent: 'center',
   },
   badgeRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 6,
+    gap: 6,
   },
   typeBadge: {
-    paddingHorizontal: 6,
+    paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
   },
   typeText: {
     fontSize: 9,
-    color: '#fff',
+    color: '#FFF',
     fontWeight: 'bold',
   },
   tagBadge: {
     backgroundColor: '#F3F4F6',
-    paddingHorizontal: 6,
+    paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
   },
@@ -373,7 +377,7 @@ const localStyles = StyleSheet.create({
     fontWeight: '700',
   },
   cardTitle: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#111827',
     marginBottom: 4,
@@ -386,59 +390,79 @@ const localStyles = StyleSheet.create({
   // Modal styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF9FA',
   },
-  modalContent: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  modalImageContainer: {
-    width: '100%',
-    height: 300,
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  modalImage: {
-    width: '100%',
-    height: '100%',
-  },
-  closeBtn: {
-    position: 'absolute',
-    top: 40,
-    right: 20,
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
-  },
-  modalBody: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  modalHeaderRow: {
+  modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginBottom: 10,
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    height: 56,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
   },
-  modalTitle: {
+  modalBackBtn: {
+    padding: 4,
+  },
+  modalHeaderTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#DA0037',
+    textAlign: 'center',
+  },
+  modalBody: {
+    flex: 1,
+  },
+  detailImageContainer: {
+    width: 200,
+    height: 200,
+    alignSelf: 'center',
+    marginTop: 20,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    overflow: 'hidden',
+    // Subtle shadow
+    shadowColor: '#DA0037',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  detailImage: {
+    width: '90%',
+    height: '90%',
+  },
+  detailTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#111827',
-    marginBottom: 8,
+    color: '#DA0037',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  paragraphsContainer: {
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  paragraphText: {
+    fontSize: 15,
+    color: '#333333',
+    lineHeight: 23,
+    marginBottom: 20,
+    textAlign: 'left',
   },
   nutrientBar: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#FAF5F6',
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#F3EAEB',
     borderRadius: 10,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 12,
+    marginBottom: 20,
   },
   nutrientLabel: {
     fontWeight: 'bold',
@@ -448,32 +472,8 @@ const localStyles = StyleSheet.create({
   nutrientVal: {
     fontSize: 13,
     color: '#4B5563',
-    marginLeft: 5,
     flex: 1,
   },
-  sectionSubtitle: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    marginTop: 8,
-    marginBottom: 12,
-  },
-  benefitItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginVertical: 6,
-  },
-  benefitBullet: {
-    fontSize: 16,
-    marginRight: 10,
-    fontWeight: 'bold',
-  },
-  benefitText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#4B5563',
-    lineHeight: 22,
-  }
 });
 
 export default TipsScreen;

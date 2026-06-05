@@ -30,7 +30,7 @@ export const COLORS = {
   MAP_BLUE: '#378ADD'
 };
 
-const activeIp = '192.168.1.37';
+const activeIp = '192.168.1.33';
 
 const webHostRaw = typeof window !== 'undefined' && window.location?.hostname
   ? window.location.hostname
@@ -41,8 +41,8 @@ const webHost = (webHostRaw === '0.0.0.0' || webHostRaw === '::1')
   : webHostRaw;
 
 export const API_URL = Platform.OS === 'web'
-  ? `http://${webHost}/donor-junction%20-%20Copy/Donor_Junction/backend-full`
-  : `http://${activeIp}/donor-junction%20-%20Copy/Donor_Junction/backend-full`;
+  ? `http://${webHost}/Donarjunction/backend-full`
+  : `http://${activeIp}/Donarjunction/backend-full`;
 
 if (Platform.OS === 'web') {
   console.log('Hub web backend API_URL:', API_URL);
