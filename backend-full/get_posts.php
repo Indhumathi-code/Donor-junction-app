@@ -65,11 +65,11 @@ function cleanMobile($mobile) {
 $mobile = cleanMobile($_GET['mobile'] ?? '');
 
 if (!empty($mobile)) {
-    $query = "SELECT p.*, u.name AS author_name FROM blood_posts p LEFT JOIN users u ON p.mobile = u.mobile WHERE p.mobile = :mobile ORDER BY p.created_at DESC";
+    $query = "SELECT p.*, u.name AS author_name, u.profile_image AS author_avatar FROM blood_posts p LEFT JOIN users u ON p.mobile = u.mobile WHERE p.mobile = :mobile ORDER BY p.created_at DESC";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':mobile', $mobile);
 } else {
-    $query = "SELECT p.*, u.name AS author_name FROM blood_posts p LEFT JOIN users u ON p.mobile = u.mobile ORDER BY p.created_at DESC";
+    $query = "SELECT p.*, u.name AS author_name, u.profile_image AS author_avatar FROM blood_posts p LEFT JOIN users u ON p.mobile = u.mobile ORDER BY p.created_at DESC";
     $stmt = $conn->prepare($query);
 }
 

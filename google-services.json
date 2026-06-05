@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101978899967",
+    "project_id": "donor-junction-301ae",
+    "storage_bucket": "donor-junction-301ae.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101978899967:android:31177355c523d7baecd3ca",
+        "android_client_info": {
+          "package_name": "com.indhumathi.donorjunction"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2o667gJ_pTANOBIFIUU8wSJsbDYMMBoI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
