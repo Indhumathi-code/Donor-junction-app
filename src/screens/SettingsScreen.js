@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  StyleSheet, Text, View, ScrollView, TouchableOpacity, 
-  TextInput, SafeAreaView, StatusBar, Image, Alert, ActivityIndicator, Switch, Dimensions 
+import {
+  StyleSheet, Text, View, ScrollView, TouchableOpacity,
+  TextInput, SafeAreaView, StatusBar, Image, Alert, ActivityIndicator, Switch, Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -40,7 +40,7 @@ export const LocationSettingsScreen = ({ navigation }) => {
       const nearby = await AsyncStorage.getItem('showNearby');
       if (location !== null) setUseLocation(JSON.parse(location));
       if (nearby !== null) setShowNearby(JSON.parse(nearby));
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const toggleLocation = async (value) => {
@@ -64,18 +64,18 @@ export const LocationSettingsScreen = ({ navigation }) => {
       <View style={{ padding: 20 }}>
         <View style={styles.settingsRow}>
           <Text style={styles.settingsRowText}>Use current location</Text>
-          <Switch 
-            value={useLocation} 
+          <Switch
+            value={useLocation}
             onValueChange={toggleLocation}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }} 
+            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
           />
         </View>
         <View style={styles.settingsRow}>
           <Text style={styles.settingsRowText}>Show me to nearby hospitals</Text>
-          <Switch 
-            value={showNearby} 
+          <Switch
+            value={showNearby}
             onValueChange={toggleNearby}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }} 
+            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
           />
         </View>
       </View>
@@ -103,7 +103,7 @@ export const NotificationsScreen = ({ navigation }) => {
       if (ua !== null) setUrgentAlerts(JSON.parse(ua));
       if (cm !== null) setChatMessages(JSON.parse(cm));
       if (rm !== null) setReminders(JSON.parse(rm));
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const saveSetting = async (key, value, setter) => {
@@ -122,34 +122,34 @@ export const NotificationsScreen = ({ navigation }) => {
       <View style={{ padding: 20 }}>
         <View style={styles.settingsRow}>
           <Text style={styles.settingsRowText}>New requests near you</Text>
-          <Switch 
-            value={newRequests} 
+          <Switch
+            value={newRequests}
             onValueChange={(v) => saveSetting('newRequests', v, setNewRequests)}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }} 
+            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
           />
         </View>
         <View style={styles.settingsRow}>
           <Text style={styles.settingsRowText}>Urgent alerts</Text>
-          <Switch 
-            value={urgentAlerts} 
+          <Switch
+            value={urgentAlerts}
             onValueChange={(v) => saveSetting('urgentAlerts', v, setUrgentAlerts)}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }} 
+            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
           />
         </View>
         <View style={styles.settingsRow}>
           <Text style={styles.settingsRowText}>Chat messages</Text>
-          <Switch 
-            value={chatMessages} 
+          <Switch
+            value={chatMessages}
             onValueChange={(v) => saveSetting('chatMessages', v, setChatMessages)}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }} 
+            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
           />
         </View>
         <View style={styles.settingsRow}>
           <Text style={styles.settingsRowText}>Donation reminders</Text>
-          <Switch 
-            value={reminders} 
+          <Switch
+            value={reminders}
             onValueChange={(v) => saveSetting('reminders', v, setReminders)}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }} 
+            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
           />
         </View>
       </View>
@@ -161,7 +161,7 @@ export const EditProfileScreen = ({ navigation, route }) => {
   const [formData, setFormData] = useState(route.params?.user || {});
   const [loading, setLoading] = useState(false);
   const API_URL = route.params?.API_URL;
-  
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -190,13 +190,13 @@ export const EditProfileScreen = ({ navigation, route }) => {
         body: JSON.stringify(formData)
       });
       const res = await response.json();
-      
+
       if (res.status === 'success') {
         Alert.alert("Success", "Profile updated successfully!");
         // Pass the updated user object back to the Settings screen
-        navigation.navigate('MainTabs', { 
-          screen: 'Settings', 
-          params: { user: formData } 
+        navigation.navigate('MainTabs', {
+          screen: 'Settings',
+          params: { user: formData }
         });
       } else {
         Alert.alert("Error", res.message);
@@ -229,33 +229,33 @@ export const EditProfileScreen = ({ navigation, route }) => {
         </View>
 
         <Text style={styles.label}>Full Name</Text>
-        <TextInput 
-          style={styles.inputField} 
-          value={formData.name} 
-          onChangeText={(v) => setFormData({...formData, name: v})}
+        <TextInput
+          style={styles.inputField}
+          value={formData.name}
+          onChangeText={(v) => setFormData({ ...formData, name: v })}
         />
-        
+
         <Text style={styles.label}>Blood Group</Text>
-        <TextInput 
-          style={styles.inputField} 
+        <TextInput
+          style={styles.inputField}
           value={formData.blood_group}
-          onChangeText={(v) => setFormData({...formData, blood_group: v})}
+          onChangeText={(v) => setFormData({ ...formData, blood_group: v })}
         />
 
         <Text style={styles.label}>Date of Birth</Text>
-        <TextInput 
-          style={styles.inputField} 
+        <TextInput
+          style={styles.inputField}
           value={formData.dob}
-          onChangeText={(v) => setFormData({...formData, dob: v})}
+          onChangeText={(v) => setFormData({ ...formData, dob: v })}
         />
 
         <Text style={styles.label}>Gender</Text>
         <View style={styles.genderRow}>
           {['Male', 'Female', 'Other'].map((g) => (
-            <TouchableOpacity 
+            <TouchableOpacity
               key={g}
               style={formData.gender === g ? styles.genderBtnActive : styles.genderBtn}
-              onPress={() => setFormData({...formData, gender: g})}
+              onPress={() => setFormData({ ...formData, gender: g })}
             >
               <Text style={formData.gender === g ? styles.genderTextActive : styles.genderText}>{g}</Text>
             </TouchableOpacity>
@@ -263,14 +263,14 @@ export const EditProfileScreen = ({ navigation, route }) => {
         </View>
 
         <Text style={styles.label}>City</Text>
-        <TextInput 
-          style={styles.inputField} 
+        <TextInput
+          style={styles.inputField}
           value={formData.city}
-          onChangeText={(v) => setFormData({...formData, city: v})}
+          onChangeText={(v) => setFormData({ ...formData, city: v })}
         />
 
-        <TouchableOpacity 
-          style={[styles.btnRed, { marginTop: 30, marginBottom: 40 }]} 
+        <TouchableOpacity
+          style={[styles.btnRed, { marginTop: 30, marginBottom: 40 }]}
           onPress={handleSave}
           disabled={loading}
         >
@@ -308,11 +308,11 @@ export const SettingsScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
-      
+
       {/* Curved Header Background */}
       <View style={styles.newHeader}>
         <View style={styles.archBackground} />
-        
+
         {/* Profile Avatar overlapping the arch boundary */}
         <View style={styles.avatarWrapper}>
           <View style={styles.avatarCircleGreen}>
@@ -322,8 +322,8 @@ export const SettingsScreen = ({ navigation, route }) => {
               <Text style={styles.avatarInitials}>{getInitials(user.name)}</Text>
             )}
           </View>
-          <TouchableOpacity 
-            onPress={() => navigation.navigate('EditProfile', { user, API_URL })} 
+          <TouchableOpacity
+            onPress={() => navigation.navigate('EditProfile', { user, API_URL })}
             style={styles.editPencil}
           >
             <Ionicons name="pencil" size={14} color="#000" />
@@ -331,9 +331,9 @@ export const SettingsScreen = ({ navigation, route }) => {
         </View>
       </View>
 
-      <ScrollView 
-        style={{ flex: 1 }} 
-        contentContainerStyle={{ paddingTop: 45, alignItems: 'center', backgroundColor: '#F5F5F5' }}
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: 20, alignItems: 'center', backgroundColor: '#F5F5F5' }}
       >
         <Text style={styles.userNameText}>{user.name}</Text>
 
@@ -423,29 +423,49 @@ const styles = StyleSheet.create({
   topBar: { backgroundColor: PRIMARY_COLOR, padding: 20, paddingTop: 30 },
   topBarTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   topBarSub: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 },
-  
+
+  //   newHeader: {
+  //     height: 180,
+  //     backgroundColor: PRIMARY_COLOR,
+  //     alignItems: 'center',
+  //     justifyContent: 'center',
+  //     position: 'relative',
+  //     zIndex: 10,
+  //     elevation: 5,
+  //   },
+  //   archBackground: {
+  //   position: 'absolute',
+  //   bottom: -60,
+  //   left: '-50%',
+  //   width: '200%',
+  //   height: 120,
+  //   borderTopLeftRadius: 200,
+  //   borderTopRightRadius: 200,
+  //   backgroundColor: '#F5F5F5',
+  // },
+
+
   newHeader: {
-    height: 150,
+    height: 160,
     backgroundColor: PRIMARY_COLOR,
     alignItems: 'center',
-    justifyContent: 'center',
     position: 'relative',
-    zIndex: 10,
-    elevation: 5,
+    overflow: 'hidden',
   },
+
   archBackground: {
     position: 'absolute',
-    bottom: -60,
-    left: '-50%',
-    width: '200%',
-    height: 120,
-    borderTopLeftRadius: 200,
-    borderTopRightRadius: 200,
+    bottom: -520,
+    width: 600,
+    height: 600,
+    borderRadius: 300,
+    alignSelf: 'center',
     backgroundColor: '#F5F5F5',
   },
+
   avatarWrapper: {
     position: 'absolute',
-    bottom: -35,
+    bottom: 30,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 11,
@@ -575,7 +595,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#111',
   },
-  
+
   profileSection: { flexDirection: 'row', alignItems: 'center', padding: 25, borderBottomWidth: 1, borderBottomColor: '#f5f5f5', backgroundColor: '#fff' },
   avatarCircle: { width: 85, height: 85, borderRadius: 42.5, backgroundColor: '#FFF0F0', justifyContent: 'center', alignItems: 'center' },
   avatarText: { color: PRIMARY_COLOR, fontSize: 32, fontWeight: 'bold' },
