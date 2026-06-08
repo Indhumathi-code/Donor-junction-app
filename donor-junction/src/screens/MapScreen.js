@@ -285,7 +285,7 @@ const MapScreen = ({ navigation, route }) => {
         </View>
       </View>
 
-      <View style={styles.mapFilters}>
+      <View style={[styles.mapFilters, { paddingBottom: 85 }]}>
         <TouchableOpacity 
           style={[styles.chip, selectedFilter === 'all' && { backgroundColor: '#e2e2e2' }]} 
           onPress={() => setSelectedFilter('all')}

@@ -11,8 +11,8 @@ export const COLORS = {
   INFO: '#0C447C'
 };
 
-const activeIp = '192.168.1.37';
+const activeIp = '192.168.1.36';
 
 export const API_URL = Platform.OS === 'web'
-  ? 'http://localhost/donor-junction%20-%20Copy/Donor_Junction/backend-full'
-  : `http://${activeIp}/donor-junction%20-%20Copy/Donor_Junction/backend-full`;
+  ? 'http://localhost/Donor-junction-app/backend-full'
+  : `http://${activeIp}/Donor-junction-app/backend-full`;
