@@ -161,100 +161,103 @@ const CreatePostScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.PRIMARY }} edges={['top', 'right', 'bottom', 'left']}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.PRIMARY} />
-      <View style={[styles.topBar, styles.topBarRow]}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={[styles.topBarTitle, { flex: 1, marginLeft: 15 }]}>Create Blood Post</Text>
-      </View>
-
-      <ScrollView style={{ padding: 20 }}>
-        <Text style={styles.label}>Post Category *</Text>
-        <View style={[styles.genderRow, { marginBottom: 15 }]}>
-          <TouchableOpacity style={category === 'donor' ? styles.genderBtnActive : styles.genderBtn} onPress={() => setCategory('donor')}>
-            <Text style={category === 'donor' ? styles.genderTextActive : styles.genderText}>Blood Donor</Text>
+      
+      <View style={[styles.container, { backgroundColor: '#FFF9FA' }]}>
+        <View style={[styles.topBar, styles.topBarRow]}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity style={category === 'seeker' ? styles.genderBtnActive : styles.genderBtn} onPress={() => setCategory('seeker')}>
-            <Text style={category === 'seeker' ? styles.genderTextActive : styles.genderText}>I Want Blood</Text>
-          </TouchableOpacity>
+          <Text style={[styles.topBarTitle, { flex: 1, marginLeft: 15 }]}>Create Blood Post</Text>
         </View>
 
-        <Text style={styles.label}>Post Title/ Name *</Text>
-        <TextInput style={styles.inputField} placeholder="e.g. Urgent AB+ Blood Needed" placeholderTextColor="#888" value={title} onChangeText={setTitle} />
+        <ScrollView style={{ padding: 20 }}>
+          <Text style={styles.label}>Post Category *</Text>
+          <View style={[styles.genderRow, { marginBottom: 15 }]}>
+            <TouchableOpacity style={category === 'donor' ? styles.genderBtnActive : styles.genderBtn} onPress={() => setCategory('donor')}>
+              <Text style={category === 'donor' ? styles.genderTextActive : styles.genderText}>Blood Donor</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={category === 'seeker' ? styles.genderBtnActive : styles.genderBtn} onPress={() => setCategory('seeker')}>
+              <Text style={category === 'seeker' ? styles.genderTextActive : styles.genderText}>I Want Blood</Text>
+            </TouchableOpacity>
+          </View>
 
-        <Text style={styles.label}>Blood Group *</Text>
-        <TextInput style={styles.inputField} placeholder="e.g. AB+" placeholderTextColor="#888" value={bloodGroup} onChangeText={setBloodGroup} />
+          <Text style={styles.label}>Post Title/ Name *</Text>
+          <TextInput style={styles.inputField} placeholder="e.g. Urgent AB+ Blood Needed" placeholderTextColor="#888" value={title} onChangeText={setTitle} />
 
-        <Text style={styles.label}>Address *</Text>
-        <TextInput style={styles.inputField} placeholder="Address" placeholderTextColor="#888" value={location} onChangeText={setLocation} />
+          <Text style={styles.label}>Blood Group *</Text>
+          <TextInput style={styles.inputField} placeholder="e.g. AB+" placeholderTextColor="#888" value={bloodGroup} onChangeText={setBloodGroup} />
 
-        <TouchableOpacity
-          style={{ flexDirection: 'row', alignItems: 'center', marginTop: -8, marginBottom: 15, paddingVertical: 4 }}
-          onPress={async () => {
-            try {
-              let { status } = await Location.requestForegroundPermissionsAsync();
-              if (status !== 'granted') {
-                Alert.alert("Permission denied", "Allow location permission to get current location");
-                return;
-              }
-              setLoadingLocation(true);
-              let loc = await Location.getCurrentPositionAsync({});
-              setLatitude(loc.coords.latitude);
-              setLongitude(loc.coords.longitude);
+          <Text style={styles.label}>Address *</Text>
+          <TextInput style={styles.inputField} placeholder="Address" placeholderTextColor="#888" value={location} onChangeText={setLocation} />
 
-              let addresses = await Location.reverseGeocodeAsync(loc.coords);
-              if (addresses && addresses.length > 0) {
-                const addr = addresses[0];
-                const friendlyAddr = `${addr.name || ''}, ${addr.street || ''}, ${addr.district || addr.city || ''}, ${addr.region || ''}`.replace(/,\s*,/g, ',').trim();
-                if (friendlyAddr && friendlyAddr !== ',') {
-                  setLocation(friendlyAddr);
+          <TouchableOpacity
+            style={{ flexDirection: 'row', alignItems: 'center', marginTop: -8, marginBottom: 15, paddingVertical: 4 }}
+            onPress={async () => {
+              try {
+                let { status } = await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') {
+                  Alert.alert("Permission denied", "Allow location permission to get current location");
+                  return;
                 }
+                setLoadingLocation(true);
+                let loc = await Location.getCurrentPositionAsync({});
+                setLatitude(loc.coords.latitude);
+                setLongitude(loc.coords.longitude);
+
+                let addresses = await Location.reverseGeocodeAsync(loc.coords);
+                if (addresses && addresses.length > 0) {
+                  const addr = addresses[0];
+                  const friendlyAddr = `${addr.name || ''}, ${addr.street || ''}, ${addr.district || addr.city || ''}, ${addr.region || ''}`.replace(/,\s*,/g, ',').trim();
+                  if (friendlyAddr && friendlyAddr !== ',') {
+                    setLocation(friendlyAddr);
+                  }
+                }
+                Alert.alert("Success", "Location attached successfully!");
+              } catch (err) {
+                Alert.alert("Error", "Failed to retrieve location: " + err.message);
+              } finally {
+                setLoadingLocation(false);
               }
-              Alert.alert("Success", "Location attached successfully!");
-            } catch (err) {
-              Alert.alert("Error", "Failed to retrieve location: " + err.message);
-            } finally {
-              setLoadingLocation(false);
-            }
-          }}
-        >
-          <Ionicons name="location" size={16} color={COLORS.PRIMARY} style={{ marginRight: 5 }} />
-          <Text style={{ color: COLORS.PRIMARY, fontSize: 13, fontWeight: 'bold' }}>
-            {loadingLocation ? "Getting location..." : (latitude ? `Location Attached (${latitude.toFixed(4)}, ${longitude.toFixed(4)})` : "Get Current Location")}
-          </Text>
-        </TouchableOpacity>
-
-        <Text style={styles.label}>Units Needed</Text>
-        <TextInput style={styles.inputField} placeholder="e.g. 2 units" placeholderTextColor="#888" value={units} onChangeText={setUnits} />
-
-        <Text style={styles.label}>Description</Text>
-        <TextInput style={[styles.inputField, { height: 100, textAlignVertical: 'top' }]} placeholder="Add details..." placeholderTextColor="#888" multiline value={description} onChangeText={setDescription} />
-
-        <Text style={styles.label}>Urgency</Text>
-        <View style={styles.genderRow}>
-          <TouchableOpacity style={type === 'normal' ? styles.genderBtnActive : styles.genderBtn} onPress={() => setType('normal')}>
-            <Text style={type === 'normal' ? styles.genderTextActive : styles.genderText}>Normal</Text>
+            }}
+          >
+            <Ionicons name="location" size={16} color={COLORS.PRIMARY} style={{ marginRight: 5 }} />
+            <Text style={{ color: COLORS.PRIMARY, fontSize: 13, fontWeight: 'bold' }}>
+              {loadingLocation ? "Getting location..." : (latitude ? `Location Attached (${latitude.toFixed(4)}, ${longitude.toFixed(4)})` : "Get Current Location")}
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={type === 'urgent' ? styles.genderBtnActive : styles.genderBtn} onPress={() => setType('urgent')}>
-            <Text style={type === 'urgent' ? styles.genderTextActive : styles.genderText}>Urgent</Text>
+
+          <Text style={styles.label}>Units Needed</Text>
+          <TextInput style={styles.inputField} placeholder="e.g. 2 units" placeholderTextColor="#888" value={units} onChangeText={setUnits} />
+
+          <Text style={styles.label}>Description</Text>
+          <TextInput style={[styles.inputField, { height: 100, textAlignVertical: 'top' }]} placeholder="Add details..." placeholderTextColor="#888" multiline value={description} onChangeText={setDescription} />
+
+          <Text style={styles.label}>Urgency</Text>
+          <View style={styles.genderRow}>
+            <TouchableOpacity style={type === 'normal' ? styles.genderBtnActive : styles.genderBtn} onPress={() => setType('normal')}>
+              <Text style={type === 'normal' ? styles.genderTextActive : styles.genderText}>Normal</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={type === 'urgent' ? styles.genderBtnActive : styles.genderBtn} onPress={() => setType('urgent')}>
+              <Text style={type === 'urgent' ? styles.genderTextActive : styles.genderText}>Urgent</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.label}>Post Image</Text>
+          <TouchableOpacity style={styles.btnOutline} onPress={pickImage}>
+            <Ionicons name="image" size={20} color={COLORS.PRIMARY} style={{ marginRight: 10 }} />
+            <Text style={styles.btnOutlineText}>{image ? "Change Image" : "Select Image"}</Text>
           </TouchableOpacity>
-        </View>
+          {image && (
+            <Text style={{ fontSize: 12, color: '#555', marginTop: 5, textAlign: 'center' }}>Image selected successfully</Text>
+          )}
 
-        <Text style={styles.label}>Post Image</Text>
-        <TouchableOpacity style={styles.btnOutline} onPress={pickImage}>
-          <Ionicons name="image" size={20} color={COLORS.PRIMARY} style={{ marginRight: 10 }} />
-          <Text style={styles.btnOutlineText}>{image ? "Change Image" : "Select Image"}</Text>
-        </TouchableOpacity>
-        {image && (
-          <Text style={{ fontSize: 12, color: '#555', marginTop: 5, textAlign: 'center' }}>Image selected successfully</Text>
-        )}
-
-        <TouchableOpacity style={[styles.btnRed, { marginTop: 30, marginBottom: 40 }]} onPress={handleSubmit} disabled={loading}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnRedText}>Submit Post</Text>}
-        </TouchableOpacity>
-      </ScrollView>
+          <TouchableOpacity style={[styles.btnRed, { marginTop: 30, marginBottom: 40 }]} onPress={handleSubmit} disabled={loading}>
+            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnRedText}>Submit Post</Text>}
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

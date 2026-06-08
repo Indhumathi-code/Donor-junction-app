@@ -1,16 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
 import { Badge, Card } from '../components/common/CommonComponents';
+import { nutritionTips } from '../data/nutritionTipsData';
+
+const { width } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation, route }) => {
   const [user, setUser] = useState(route.params?.user || { name: 'Guest', blood_group: 'N/A', city: 'Unknown' });
   const [campaignsCount, setCampaignsCount] = useState(0);
   const [urgentCampaign, setUrgentCampaign] = useState(null);
+
+  const carouselRef = useRef(null);
+  const currentIndexRef = useRef(0);
+
+  useEffect(() => {
+    if (!nutritionTips || nutritionTips.length === 0) return;
+    const interval = setInterval(() => {
+      currentIndexRef.current = (currentIndexRef.current + 1) % nutritionTips.length;
+      if (carouselRef.current) {
+        const itemWidth = (width * 0.85) + 15;
+        carouselRef.current.scrollTo({ x: currentIndexRef.current * itemWidth, animated: true });
+      }
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
 
   const loadCampaignStats = async () => {
     try {
@@ -21,7 +39,7 @@ const HomeScreen = ({ navigation, route }) => {
       console.log('🔍 HomeScreen API_URL:', API_URL);
       const response = await fetch(`${API_URL}/get_campaigns.php`);
       console.log('📡 HomeScreen fetch status:', response.status);
-      
+
       if (!response.ok) {
         console.error('❌ HomeScreen API response not ok:', response.statusText);
         return;
@@ -33,7 +51,7 @@ const HomeScreen = ({ navigation, route }) => {
       if (resData.status === 'success' && Array.isArray(resData.campaigns)) {
         const allCampaigns = resData.campaigns;
         console.log('✅ HomeScreen found campaigns:', allCampaigns.length);
-        
+
         let filteredCampaigns = allCampaigns;
         if (cityFilter) {
           const safeCity = cityFilter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -108,7 +126,52 @@ const HomeScreen = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
       </View>
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 100 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 15 }}>
+          <Text style={styles.sectionTitle}>Health tips</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Tips')} style={{ paddingRight: 15 }}>
+            {/* <Text style={{ color: COLORS.PRIMARY, fontSize: 14, fontWeight: '600' }}>See all</Text> */}
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          ref={carouselRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingLeft: 15, paddingBottom: 20 }}
+        >
+          {nutritionTips.map((item) => {
+            const isRemoteUrl = typeof item.image === 'string' && (item.image.startsWith('http://') || item.image.startsWith('https://'));
+            const imageSrc = isRemoteUrl ? { uri: item.image } : item.image;
+            return (
+              <TouchableOpacity
+                key={item.id.toString()}
+                style={{
+                  width: width * 0.85,
+                  marginRight: 20,
+                  backgroundColor: '#dd8a8a46',
+                  borderRadius: 30,
+                  padding: 15,
+                  marginRight: 20,
+                  height: 200,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+                onPress={() => navigation.navigate('Tips')}
+              >
+                <Image
+                  source={imageSrc}
+                  style={{ width: 160, height: 150, borderRadius: 10, marginRight: 15, backgroundColor: '#FFF' }}
+                  resizeMode="cover"
+                />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#111827', marginBottom: 4 }}>{item.name}</Text>
+                  <Text style={{ fontSize: 12, color: '#4B5563', lineHeight: 16 }} numberOfLines={4}>{item.teaser}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+
         <View style={styles.shortcutGrid}>
           <TouchableOpacity style={styles.shortcutItem} onPress={() => navigation.navigate('Map')}>
             <Ionicons name="location" size={24} color={COLORS.PRIMARY} />
@@ -145,7 +208,7 @@ const HomeScreen = ({ navigation, route }) => {
             <Text style={[styles.statValue, { color: '#27500A' }]}>152</Text>
             <Text style={[styles.statLabel, { color: '#27500A' }]}>days since last</Text>
           </View>
-          <View style={[styles.statBox, { backgroundColor: '#e6f1fb' }]}>            
+          <View style={[styles.statBox, { backgroundColor: '#e6f1fb' }]}>
             <Text style={[styles.statValue, { color: '#0C447C' }]}>{campaignsCount}</Text>
             <Text style={[styles.statLabel, { color: '#0C447C' }]}>campaigns</Text>
           </View>

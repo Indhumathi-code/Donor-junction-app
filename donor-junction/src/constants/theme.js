@@ -14,5 +14,5 @@ export const COLORS = {
 const activeIp = '192.168.1.36';
 
 export const API_URL = Platform.OS === 'web'
-  ? 'http://localhost/Donor-junction-app/backend-full'
+  ? 'http://192.168.1.36/Donor-junction-app/backend-full'
   : `http://${activeIp}/Donor-junction-app/backend-full`;

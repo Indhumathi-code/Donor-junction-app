@@ -402,46 +402,48 @@ const MyPostsScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%' }]} edges={['top', 'right', 'bottom', 'left']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.PRIMARY }} edges={['top', 'right', 'bottom', 'left']}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.PRIMARY} />
       
-      {/* Header */}
-      <View style={[styles.header, { backgroundColor: COLORS.PRIMARY, borderBottomWidth: 0 }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: '#FFFFFF' }]}>My Posts</Text>
-        <TouchableOpacity 
-          onPress={() => navigation.navigate('CreatePost', { fromScreen: 'MyPosts' })}
-          style={styles.headerRightBtn}
-        >
-          <Ionicons name="add" size={28} color="#FFFFFF" />
-        </TouchableOpacity>
+      <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
+        {/* Header */}
+        <View style={[styles.header, { backgroundColor: COLORS.PRIMARY, borderBottomWidth: 0 }]}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: '#FFFFFF' }]}>My Posts</Text>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('CreatePost', { fromScreen: 'MyPosts' })}
+            style={styles.headerRightBtn}
+          >
+            <Ionicons name="add" size={28} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+        
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.PRIMARY} style={{ marginTop: 50 }} />
+        ) : (
+          <FlatList
+            data={posts}
+            keyExtractor={item => item.id.toString()}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            contentContainerStyle={{ paddingVertical: 15 }}
+            renderItem={({ item }) => (
+              <PostCard 
+                item={item}
+                loggedInMobile={loggedInMobile}
+                loggedInName={loggedInName}
+                isOwnPost={isOwnPost}
+                handleDeletePost={handleDeletePost}
+                handleShare={handleShare}
+                navigation={navigation}
+              />
+            )}
+            style={{ flex: 1 }}
+          />
+        )}
       </View>
-      
-      {loading ? (
-        <ActivityIndicator size="large" color={COLORS.PRIMARY} style={{ marginTop: 50 }} />
-      ) : (
-        <FlatList
-          data={posts}
-          keyExtractor={item => item.id.toString()}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          contentContainerStyle={{ paddingVertical: 15 }}
-          renderItem={({ item }) => (
-            <PostCard 
-              item={item}
-              loggedInMobile={loggedInMobile}
-              loggedInName={loggedInName}
-              isOwnPost={isOwnPost}
-              handleDeletePost={handleDeletePost}
-              handleShare={handleShare}
-              navigation={navigation}
-            />
-          )}
-          style={{ flex: 1 }}
-        />
-      )}
     </SafeAreaView>
   );
 };
