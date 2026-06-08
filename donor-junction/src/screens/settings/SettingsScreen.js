@@ -132,7 +132,7 @@ export const EditProfileScreen = ({ navigation, route }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.5,
+      quality: 0.2, // Compress heavily to avoid PHP post limits
       base64: true,
     });
 
@@ -158,16 +158,17 @@ export const EditProfileScreen = ({ navigation, route }) => {
 
       if (res.status === 'success') {
         Alert.alert("Success", "Profile updated successfully!");
+        await AsyncStorage.setItem('user', JSON.stringify(formData));
         // Pass the updated user object back to the Settings screen
         navigation.navigate('MainTabs', {
           screen: 'Settings',
           params: { user: formData }
         });
       } else {
-        Alert.alert("Error", res.message);
+        Alert.alert("Error", res.message || res.error || JSON.stringify(res));
       }
     } catch (error) {
-      Alert.alert("Error", "Connection failed. Make sure XAMPP is running.");
+      Alert.alert("Error", "Connection failed. Make sure XAMPP is running. Error: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -246,8 +247,28 @@ export const EditProfileScreen = ({ navigation, route }) => {
   );
 };
 
+import { useFocusEffect } from '@react-navigation/native';
+
 export const SettingsScreen = ({ navigation, route }) => {
-  const user = route.params?.user || { name: 'Guest', blood_group: 'N/A', city: 'Unknown' };
+  const [user, setUser] = useState(route.params?.user || { name: 'Guest', blood_group: 'N/A', city: 'Unknown' });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadUser = async () => {
+        try {
+          const userData = await AsyncStorage.getItem('user');
+          if (userData) {
+            setUser(JSON.parse(userData));
+          } else if (route.params?.user) {
+            setUser(route.params.user);
+          }
+        } catch (e) {
+          console.log('Failed to load user', e);
+        }
+      };
+      loadUser();
+    }, [route.params?.user])
+  );
   const API_URL = route.params?.API_URL;
   const [postCount, setPostCount] = useState(0);
   const [donationCount, setDonationCount] = useState(0);

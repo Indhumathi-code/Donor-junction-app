@@ -67,7 +67,6 @@ const CurvedTabBar = ({ state, descriptors, navigation }) => {
           viewBox={`${-width} 0 ${width * 3} ${TAB_HEIGHT + bottomInset}`}
           style={{ position: 'absolute', left: -width }}
         >
-          {/* subtle shadow effect can be achieved by removing stroke or making it very light */}
           <Path d={getPath(bottomInset)} fill="#FFFFFF" stroke="rgba(0,0,0,0.03)" strokeWidth="1" />
         </Svg>
       </Animated.View>

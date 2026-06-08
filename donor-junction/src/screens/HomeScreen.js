@@ -85,7 +85,10 @@ const HomeScreen = ({ navigation, route }) => {
       <StatusBar barStyle="light-content" backgroundColor={COLORS.PRIMARY} />
       <View style={[styles.topBar, styles.topBarRow]}>
         <View>
-          <Text style={styles.topBarTitle}>Hello, {user.name} <Badge color="rgba(255,255,255,.2)" textColor="#fff">{user.blood_group}</Badge></Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+            <Text style={styles.topBarTitle}>Hello, {user.name} </Text>
+            <Badge color="rgba(255,255,255,.2)" textColor="#fff">{user.blood_group}</Badge>
+          </View>
           <Text style={styles.topBarSub}>Eligible to donate • {user.city}</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>

@@ -15,7 +15,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.5,
+      quality: 0.2,
       base64: true,
     });
 
@@ -47,13 +47,10 @@ const EditProfileScreen = ({ navigation, route }) => {
           params: { user: formData }
         });
       } else {
-        Alert.alert("Error", res.message);
+        Alert.alert("Error", res.message || res.error || JSON.stringify(res));
       }
     } catch (error) {
-      Alert.alert("Success", "Profile updated successfully!");
-      AsyncStorage.setItem('user', JSON.stringify(formData)).then(() => {
-        navigation.navigate('MainTabs', { screen: 'Settings', params: { user: formData } });
-      });
+      Alert.alert("Error", "Connection failed. Make sure XAMPP is running. Error: " + error.message);
     } finally {
       setLoading(false);
     }
