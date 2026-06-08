@@ -84,7 +84,6 @@ export const LocationSettingsScreen = ({ navigation }) => {
 };
 
 export const NotificationsScreen = ({ navigation }) => {
-<<<<<<< HEAD
   const [newRequests, setNewRequests] = useState(true);
   const [urgentAlerts, setUrgentAlerts] = useState(true);
   const [chatMessages, setChatMessages] = useState(true);
@@ -111,10 +110,6 @@ export const NotificationsScreen = ({ navigation }) => {
     setter(value);
     await AsyncStorage.setItem(key, JSON.stringify(value));
   };
-=======
-  // Empty notifications array for now until a backend endpoint is ready
-  const notifications = [];
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
 
   return (
     <SafeAreaView style={styles.container}>
@@ -124,7 +119,6 @@ export const NotificationsScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.topBarTitle}>Notifications</Text>
       </View>
-<<<<<<< HEAD
       <View style={{ padding: 20 }}>
         <View style={styles.settingsRow}>
           <Text style={styles.settingsRowText}>New requests near you</Text>
@@ -248,120 +242,6 @@ export const EditProfileScreen = ({ navigation, route }) => {
           onChangeText={(v) => setFormData({ ...formData, blood_group: v })}
         />
 
-=======
-      <ScrollView style={{ padding: 15 }} contentContainerStyle={notifications.length === 0 ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : {}}>
-        {notifications.length === 0 ? (
-          <View style={{ alignItems: 'center', marginTop: 50 }}>
-            <Ionicons name="notifications-off-outline" size={60} color="#ccc" />
-            <Text style={{ marginTop: 15, fontSize: 16, color: '#999' }}>No new notifications yet</Text>
-          </View>
-        ) : (
-          notifications.map((notif) => (
-            <View key={notif.id} style={{ flexDirection: 'row', backgroundColor: '#fff', padding: 15, borderRadius: 10, marginBottom: 15, elevation: 2 }}>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#FFF0F0', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
-                <Ionicons name={notif.icon} size={20} color={PRIMARY_COLOR} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#333' }}>{notif.title}</Text>
-                  <Text style={{ fontSize: 12, color: '#999' }}>{notif.time}</Text>
-                </View>
-                <Text style={{ color: '#666', lineHeight: 20 }}>{notif.message}</Text>
-              </View>
-            </View>
-          ))
-        )}
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-export const EditProfileScreen = ({ navigation, route }) => {
-  const [formData, setFormData] = useState(route.params?.user || {});
-  const [loading, setLoading] = useState(false);
-  const API_URL = route.params?.API_URL;
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-      base64: true,
-    });
-
-    if (!result.canceled) {
-      setFormData({ ...formData, profile_image: `data:image/jpeg;base64,${result.assets[0].base64}` });
-    }
-  };
-
-  const handleSave = async () => {
-    if (!formData.id) {
-      Alert.alert("Error", "User ID not found. Please log in again.");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/update_profile.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      const res = await response.json();
-
-      if (res.status === 'success') {
-        Alert.alert("Success", "Profile updated successfully!");
-        // Pass the updated user object back to the Settings screen
-        navigation.navigate('MainTabs', {
-          screen: 'Settings',
-          params: { user: formData }
-        });
-      } else {
-        Alert.alert("Error", res.message);
-      }
-    } catch (error) {
-      Alert.alert("Error", "Connection failed. Make sure XAMPP is running.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.topBarTitle}>Edit Profile</Text>
-      </View>
-      <ScrollView style={{ padding: 20 }}>
-        <View style={{ alignItems: 'center', marginBottom: 20 }}>
-          <TouchableOpacity onPress={pickImage} style={styles.avatarCircleLarge}>
-            {formData.profile_image ? (
-              <Image source={{ uri: formData.profile_image }} style={{ width: 100, height: 100, borderRadius: 50 }} />
-            ) : (
-              <Ionicons name="camera" size={40} color={PRIMARY_COLOR} />
-            )}
-          </TouchableOpacity>
-          <Text style={{ color: PRIMARY_COLOR, marginTop: 10, fontWeight: 'bold' }}>Change Photo</Text>
-        </View>
-
-        <Text style={styles.label}>Full Name</Text>
-        <TextInput
-          style={styles.inputField}
-          value={formData.name}
-          onChangeText={(v) => setFormData({ ...formData, name: v })}
-        />
-
-        <Text style={styles.label}>Blood Group</Text>
-        <TextInput
-          style={styles.inputField}
-          value={formData.blood_group}
-          onChangeText={(v) => setFormData({ ...formData, blood_group: v })}
-        />
-
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
         <Text style={styles.label}>Date of Birth</Text>
         <TextInput
           style={styles.inputField}
@@ -408,12 +288,7 @@ export const SettingsScreen = ({ navigation, route }) => {
   const [donationCount, setDonationCount] = useState(0);
 
   const getInitials = (name) => {
-<<<<<<< HEAD
-    if (!name || typeof name !== 'string') return 'U';
-    return name.split(' ').map(n => n?.[0] || '').join('').toUpperCase().substring(0, 2);
-=======
     return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
   };
 
   useEffect(() => {
@@ -430,20 +305,6 @@ export const SettingsScreen = ({ navigation, route }) => {
     }
   }, [user.mobile, API_URL]);
 
-<<<<<<< HEAD
-=======
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('user');
-      // If there are other tokens, clear them here
-      navigation.replace('Welcome');
-    } catch (e) {
-      console.log('Error clearing async storage on logout:', e);
-      navigation.replace('Welcome');
-    }
-  };
-
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
@@ -472,24 +333,12 @@ export const SettingsScreen = ({ navigation, route }) => {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: 45, alignItems: 'center', backgroundColor: '#F5F5F5' }}
+        contentContainerStyle={{ paddingTop: 20, alignItems: 'center', backgroundColor: '#F5F5F5' }}
       >
         <Text style={styles.userNameText}>{user.name}</Text>
 
         {/* Statistics Cards */}
         <View style={styles.statsContainer}>
-<<<<<<< HEAD
-          <TouchableOpacity style={styles.statCard} onPress={() => navigation.navigate('MyPosts')}>
-            <View style={[styles.cornerDecorator, { bottom: -15, left: -15 }]} />
-            <Text style={styles.statNumber}>{postCount}</Text>
-            <Text style={styles.statLabel}>Post</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.statCard} onPress={() => navigation.navigate('Certificates')}>
-            <View style={[styles.cornerDecorator, { top: -15, right: -15 }]} />
-            <Text style={styles.statNumber}>{donationCount}</Text>
-            <Text style={styles.statLabel}>Donations</Text>
-          </TouchableOpacity>
-=======
           <View style={styles.statCard}>
             <View style={[styles.cornerDecorator, { bottom: -15, left: -15 }]} />
             <Text style={styles.statNumber}>{postCount}</Text>
@@ -500,16 +349,20 @@ export const SettingsScreen = ({ navigation, route }) => {
             <Text style={styles.statNumber}>{donationCount}</Text>
             <Text style={styles.statLabel}>Donations</Text>
           </View>
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
         </View>
 
         {/* Card Options */}
         <View style={styles.menuContainer}>
+          <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('Posts')}>
+            <View style={styles.menuLeft}>
+              <View style={styles.menuIconContainer}>
+                <Ionicons name="paper-plane-outline" size={20} color={PRIMARY_COLOR} />
+              </View>
+              <Text style={styles.menuText}>Post</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color="#ccc" />
+          </TouchableOpacity>
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
           <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('Certificates')}>
             <View style={styles.menuLeft}>
               <View style={styles.menuIconContainer}>
@@ -520,7 +373,15 @@ export const SettingsScreen = ({ navigation, route }) => {
             <Ionicons name="chevron-forward" size={18} color="#ccc" />
           </TouchableOpacity>
 
-
+          <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('Chat')}>
+            <View style={styles.menuLeft}>
+              <View style={styles.menuIconContainer}>
+                <Ionicons name="chatbubbles-outline" size={20} color={PRIMARY_COLOR} />
+              </View>
+              <Text style={styles.menuText}>Chat</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color="#ccc" />
+          </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('LocationSettings')}>
             <View style={styles.menuLeft}>
@@ -542,14 +403,7 @@ export const SettingsScreen = ({ navigation, route }) => {
             <Ionicons name="chevron-forward" size={18} color="#ccc" />
           </TouchableOpacity>
 
-<<<<<<< HEAD
-          <TouchableOpacity style={[styles.menuCard, { marginBottom: 30 }]} onPress={async () => {
-            await AsyncStorage.removeItem('user');
-            navigation.replace('Welcome');
-          }}>
-=======
-          <TouchableOpacity style={[styles.menuCard, { marginBottom: 30 }]} onPress={handleLogout}>
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
+          <TouchableOpacity style={[styles.menuCard, { marginBottom: 30 }]} onPress={() => navigation.replace('Welcome')}>
             <View style={styles.menuLeft}>
               <View style={styles.menuIconContainer}>
                 <Ionicons name="log-out-outline" size={20} color={PRIMARY_COLOR} />
@@ -570,36 +424,48 @@ const styles = StyleSheet.create({
   topBarTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   topBarSub: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 },
 
+  //   newHeader: {
+  //     height: 180,
+  //     backgroundColor: PRIMARY_COLOR,
+  //     alignItems: 'center',
+  //     justifyContent: 'center',
+  //     position: 'relative',
+  //     zIndex: 10,
+  //     elevation: 5,
+  //   },
+  //   archBackground: {
+  //   position: 'absolute',
+  //   bottom: -60,
+  //   left: '-50%',
+  //   width: '200%',
+  //   height: 120,
+  //   borderTopLeftRadius: 200,
+  //   borderTopRightRadius: 200,
+  //   backgroundColor: '#F5F5F5',
+  // },
+
+
   newHeader: {
-<<<<<<< HEAD
-    height: 150,
-=======
-    height: 200,
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
+    height: 160,
     backgroundColor: PRIMARY_COLOR,
     alignItems: 'center',
-    justifyContent: 'center',
     position: 'relative',
-    zIndex: 10,
-<<<<<<< HEAD
-=======
-
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
-    elevation: 5,
+    overflow: 'hidden',
   },
+
   archBackground: {
     position: 'absolute',
-    bottom: -60,
-    left: '-50%',
-    width: '200%',
-    height: 120,
-    borderTopLeftRadius: 200,
-    borderTopRightRadius: 200,
+    bottom: -520,
+    width: 600,
+    height: 600,
+    borderRadius: 300,
+    alignSelf: 'center',
     backgroundColor: '#F5F5F5',
   },
+
   avatarWrapper: {
     position: 'absolute',
-    bottom: -35,
+    bottom: 30,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 11,
@@ -750,9 +616,6 @@ const styles = StyleSheet.create({
   avatarCircleLarge: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#FFEAEA', justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: PRIMARY_COLOR },
 });
 
-<<<<<<< HEAD
-export default SettingsScreen;
-=======
 
 
 
@@ -760,4 +623,10 @@ export default SettingsScreen;
 
 
 
->>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
+
+
+
+
+
+
+

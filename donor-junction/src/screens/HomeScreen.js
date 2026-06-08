@@ -106,7 +106,7 @@ const HomeScreen = ({ navigation, route }) => {
           <Text style={styles.topBarTitle}>Hello, {user.name} <Badge color="rgba(255,255,255,.2)" textColor="#fff">{user.blood_group}</Badge></Text>
           <Text style={styles.topBarSub}>Eligible to donate • {user.city}</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
           <View style={{ position: 'relative' }}>
             <Ionicons name="notifications-outline" size={24} color="#fff" />
             <View style={{

@@ -11,8 +11,15 @@ export const COLORS = {
   INFO: '#0C447C'
 };
 
+<<<<<<< HEAD
 const activeIp = '192.168.1.56';
 
 export const API_URL = Platform.OS === 'web'
   ? 'http://192.168.1.56/Donor-junction-app/backend-full'
+=======
+const activeIp = '192.168.1.36';
+
+export const API_URL = Platform.OS === 'web'
+  ? 'http://localhost/Donor-junction-app/backend-full'
+>>>>>>> 8c067bcbc847b8a339f2eb85142c9de00c93d7b6
   : `http://${activeIp}/Donor-junction-app/backend-full`;

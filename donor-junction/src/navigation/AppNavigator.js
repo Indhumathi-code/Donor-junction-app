@@ -18,11 +18,7 @@ import TipsScreen from '../screens/TipsScreen';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
 import ScheduleScreen from '../screens/ScheduleScreen';
-import SettingsScreen from '../screens/settings/SettingsScreen';
-import EditProfileScreen from '../screens/settings/EditProfileScreen';
-import CertificatesScreen from '../screens/settings/CertificatesScreen';
-import NotificationsScreen from '../screens/settings/NotificationsScreen';
-import LocationSettingsScreen from '../screens/settings/LocationSettingsScreen';
+import { SettingsScreen, EditProfileScreen, CertificatesScreen, NotificationsScreen, LocationSettingsScreen } from '../screens/settings/SettingsScreen';
 import CreatePostScreen from '../screens/CreatePostScreen';
 import MyPostsScreen from '../screens/MyPostsScreen';
 import CampaignsScreen from '../screens/CampaignsScreen';
@@ -30,15 +26,16 @@ import CampaignsScreen from '../screens/CampaignsScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+import CurvedTabBar from '../components/navigation/CurvedTabBar';
+
 const MainTabs = ({ route }) => (
-  <Tab.Navigator screenOptions={({ route: r }) => ({
-    tabBarIcon: ({ color, size }) => {
-      let iconName = r.name === 'Home' ? 'home' : r.name === 'Map' ? 'location' : r.name === 'Posts' ? 'document-text' : r.name === 'Chat' ? 'chatbubble' : 'settings';
-      return <Ionicons name={iconName} size={size} color={color} />;
-    },
-    tabBarActiveTintColor: COLORS.PRIMARY,
-    headerShown: false,
-  })}>
+  <Tab.Navigator 
+    initialRouteName="Home"
+    tabBar={(props) => <CurvedTabBar {...props} />}
+    screenOptions={({ route: r }) => ({
+      headerShown: false,
+    })}
+  >
     <Tab.Screen name="Home" component={HomeScreen} initialParams={{ user: route.params?.user }} />
     <Tab.Screen name="Map" component={MapScreen} />
     <Tab.Screen name="Posts" component={PostsScreen} />

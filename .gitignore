@@ -1,22 +1,33 @@
-# Node dependencies
+# dependencies
 node_modules/
-.expo/
-.vscode/
-.kotlin/
 
-# Build outputs
+# Expo
+.expo/
 dist/
 build/
 web-build/
-.gradle/
-.idea/
-.cxx/
 expo-env.d.ts
-*.tsbuildinfo
-*.jsbundle
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.pem
+*.mobileprovision
 local.properties
 *.iml
 *.hprof
+.gradle/
+.idea/
+.cxx/
+*.tsbuildinfo
+*.jsbundle
+
+# Metro
+.metro-health-check*
 
 # PHP specific
 .phpunit.result.cache
@@ -27,24 +38,18 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# Native keys and certificates
-*.jks
-*.p8
-*.p12
-*.key
-*.pem
-*.mobileprovision
-*.orig.*
-
-# Metro
-.metro-health-check*
-
 # OS generated files
 .DS_Store
 Thumbs.db
 
+# VSCode
+.vscode/
+
 # local env files
 .env*.local
+
+# typescript
+*.tsbuildinfo
 
 # App specific generated folders
 ios/
