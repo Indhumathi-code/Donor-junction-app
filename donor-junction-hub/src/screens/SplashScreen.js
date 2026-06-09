@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, Alert } from 'react-native';
+import { View, Text, StyleSheet, Animated, Alert, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '../constants/theme';
@@ -63,9 +63,10 @@ export default function SplashScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.content, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
-        <View style={styles.iconContainer}>
-          <Ionicons name="business" size={40} color="#FFFFFF" />
-        </View>
+        <Image 
+          source={require('../../assets/images/donor_logo.png')} 
+          style={styles.logo} 
+        />
         <Text style={styles.title}>Donor Junction Hub</Text>
         <Text style={styles.subtitle}>For Hospitals & NGOs</Text>
 
@@ -86,16 +87,11 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
   },
-  iconContainer: {
+  logo: {
     width: 90,
     height: 90,
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 22,
   },
   title: {
     fontSize: 24,

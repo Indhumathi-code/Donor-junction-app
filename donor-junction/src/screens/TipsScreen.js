@@ -10,7 +10,7 @@ const TipsScreen = ({ navigation }) => {
 
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#DA0037' }} edges={['top', 'right', 'bottom', 'left']}>
+    <SafeAreaView style={[styles.container, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%', backgroundColor: '#DA0037' }]} edges={['top', 'right', 'bottom', 'left']}>
       <StatusBar barStyle="light-content" backgroundColor="#DA0037" />
 
       <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
@@ -23,6 +23,8 @@ const TipsScreen = ({ navigation }) => {
           <View style={{ width: 24 }} />
         </View>
 
+      {/* Main Content Area */}
+      <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
         {/* Main List View */}
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingVertical: 15 }}>
           {nutritionTips.map((item) => {
@@ -68,17 +70,18 @@ const TipsScreen = ({ navigation }) => {
         transparent={false}
         onRequestClose={() => setSelectedItem(null)}
       >
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#DA0037' }} edges={['top', 'right', 'bottom', 'left']}>
-          <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
-            {/* Modal Header */}
-            <View style={[styles.modalHeader, { backgroundColor: '#DA0037', borderBottomWidth: 0 }]}>
-              <TouchableOpacity onPress={() => setSelectedItem(null)} style={styles.modalBackBtn}>
-                <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-              </TouchableOpacity>
-              <Text style={[styles.modalHeaderTitle, { color: '#FFFFFF' }]}>Health Tips</Text>
-              <View style={{ width: 24 }} />
-            </View>
+        <SafeAreaView style={[styles.modalOverlay, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%', backgroundColor: '#DA0037' }]} edges={['top', 'right', 'bottom', 'left']}>
+          {/* Modal Header */}
+          <View style={[styles.modalHeader, { backgroundColor: '#DA0037', borderBottomWidth: 0 }]}>
+            <TouchableOpacity onPress={() => setSelectedItem(null)} style={styles.modalBackBtn}>
+              <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <Text style={[styles.modalHeaderTitle, { color: '#FFFFFF' }]}>Health Tips</Text>
+            <View style={{ width: 24 }} /> {/* Balancer */}
+          </View>
 
+          {/* Modal Content Area */}
+          <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
             {selectedItem && (
               <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
                 {/* Centered Image */}

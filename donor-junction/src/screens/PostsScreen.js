@@ -18,12 +18,12 @@ const getDistanceInKm = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Radius of the earth in km
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2); 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-  const d = R * c; 
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c;
   return d.toFixed(1);
 };
 
@@ -74,9 +74,9 @@ const PostCard = ({ item, loggedInMobile, loggedInName, isOwnPost, handleDeleteP
       <View style={styles.authorHeader}>
         <View style={styles.authorInfo}>
           {avatarSrc ? (
-            <Image 
-              source={avatarSrc} 
-              style={styles.avatar} 
+            <Image
+              source={avatarSrc}
+              style={styles.avatar}
             />
           ) : (
             <View style={[styles.avatar, styles.avatarPlaceholder]}>
@@ -87,8 +87,8 @@ const PostCard = ({ item, loggedInMobile, loggedInName, isOwnPost, handleDeleteP
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           {isOwnPost(item.mobile, item.title) && (
-            <TouchableOpacity 
-              style={styles.deleteButton} 
+            <TouchableOpacity
+              style={styles.deleteButton}
               onPress={() => handleDeletePost(item.id)}
             >
               <Ionicons name="trash-outline" size={18} color="#DA0037" />
@@ -114,9 +114,9 @@ const PostCard = ({ item, loggedInMobile, loggedInName, isOwnPost, handleDeleteP
           ) : null}
 
           {imageSrc && !imageError ? (
-            <Image 
-              source={imageSrc} 
-              style={[styles.postImage, showPlaceholder ? { width: 0, height: 0, position: 'absolute' } : {}]} 
+            <Image
+              source={imageSrc}
+              style={[styles.postImage, showPlaceholder ? { width: 0, height: 0, position: 'absolute' } : {}]}
               resizeMode="cover"
               onLoad={() => setImageLoaded(true)}
               onError={() => {
@@ -154,20 +154,20 @@ const PostCard = ({ item, loggedInMobile, loggedInName, isOwnPost, handleDeleteP
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
             <TouchableOpacity onPress={() => {
               if (item.mobile) {
-                navigation.navigate('ChatRoom', { 
-                  hospitalName: item.author_name || 'Blood Poster', 
+                navigation.navigate('ChatRoom', {
+                  hospitalName: item.author_name || 'Blood Poster',
                   partnerMobile: item.mobile,
                   partnerType: 'user',
-                  online: true, 
-                  user: { mobile: loggedInMobile, name: loggedInName } 
+                  online: true,
+                  user: { mobile: loggedInMobile, name: loggedInName }
                 });
               }
             }}>
               <Ionicons name="chatbubble-outline" size={22} color="#111" />
             </TouchableOpacity>
           </View>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.scheduleBtn}
             onPress={() => navigation.navigate('Schedule', { post: item })}
           >
@@ -181,7 +181,7 @@ const PostCard = ({ item, loggedInMobile, loggedInName, isOwnPost, handleDeleteP
             <Text style={styles.captionAuthor}>{authorName} </Text>
             We need {item.units_needed || '1'} units of {item.blood_group || 'B+'} blood group
           </Text>
-          
+
           {item.description ? (
             <Text style={styles.descText}>{item.description}</Text>
           ) : null}
@@ -383,24 +383,25 @@ const PostsScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.PRIMARY }} edges={['top', 'right', 'bottom', 'left']}>
+    <SafeAreaView style={[styles.container, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%', backgroundColor: COLORS.PRIMARY }]} edges={['top', 'right', 'bottom', 'left']}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.PRIMARY} />
-      
-      <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
-        {/* Header */}
-        <View style={[styles.header, { backgroundColor: COLORS.PRIMARY, borderBottomWidth: 0 }]}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: '#FFFFFF' }]}>Blood Post</Text>
-          <TouchableOpacity 
-            onPress={() => navigation.navigate('CreatePost', { fromScreen: 'Posts' })}
-            style={styles.headerRightBtn}
-          >
-            <Ionicons name="add" size={28} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
 
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: COLORS.PRIMARY, borderBottomWidth: 0 }]}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+        <Text style={[styles.headerTitle, { color: '#FFFFFF' }]}>Blood Post</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CreatePost', { fromScreen: 'Posts' })}
+          style={styles.headerRightBtn}
+        >
+          <Ionicons name="add" size={28} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Main Content Area */}
+      <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
         {loading ? (
           <ActivityIndicator size="large" color={COLORS.PRIMARY} style={{ marginTop: 50 }} />
         ) : (
@@ -411,7 +412,7 @@ const PostsScreen = ({ navigation, route }) => {
             onRefresh={handleRefresh}
             contentContainerStyle={{ paddingVertical: 15 }}
             renderItem={({ item }) => (
-              <PostCard 
+              <PostCard
                 item={item}
                 loggedInMobile={loggedInMobile}
                 loggedInName={loggedInName}

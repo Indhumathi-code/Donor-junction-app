@@ -22,7 +22,7 @@ const WelcomeScreen = ({ navigation }) => {
 
       <View style={styles.welcomeTop}>
         <View style={styles.welcomeLogo}>
-          <Image source={require('../assets/images/donor_junction_logo.jpeg')} style={{ width: 100, height: 100, borderRadius: 25 }} resizeMode="cover" />
+          <Image source={require('../assets/images/donor_logo.png')} style={{ width: 100, height: 100, borderRadius: 25 }} resizeMode="cover" />
         </View>
         <Text style={styles.welcomeTitle}>Welcome</Text>
         <Text style={styles.welcomeSubTitle}>Save lives. Donate blood.</Text>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants/theme';
 
@@ -7,9 +7,10 @@ export default function WelcomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.banner}>
-        <View style={styles.iconContainer}>
-          <Ionicons name="business" size={32} color="#FFFFFF" />
-        </View>
+        <Image 
+          source={require('../../assets/images/donor_logo.png')} 
+          style={styles.logo} 
+        />
         <Text style={styles.title}>Welcome to Hub</Text>
         <Text style={styles.subtitle}>Organisation portal for blood management</Text>
       </View>
@@ -49,14 +50,11 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
   },
-  iconContainer: {
-    width: 64,
-    height: 64,
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+  logo: {
+    width: 72,
+    height: 72,
     marginBottom: 16,
+    borderRadius: 18,
   },
   title: {
     fontSize: 22,
