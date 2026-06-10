@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
   StyleSheet, Text, View, ScrollView, TouchableOpacity,
-  TextInput, SafeAreaView, StatusBar, Image, Alert, ActivityIndicator, Switch, Dimensions
+  TextInput, StatusBar, Image, Alert, Switch, Dimensions
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
-import { COLORS, API_URL } from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 import SmallSupermanLoader from '../../components/SmallSupermanLoader';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,17 +15,20 @@ const { width } = Dimensions.get('window');
 const PRIMARY_COLOR = '#DA0037';
 
 export const CertificatesScreen = ({ navigation }) => (
-  <SafeAreaView style={styles.container}>
-    <View style={styles.topBar}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-        <Ionicons name="arrow-back" size={24} color="#fff" />
-      </TouchableOpacity>
-      <Text style={styles.topBarTitle}>My Certificates</Text>
-    </View>
-    <View style={{ padding: 20, alignItems: 'center' }}>
-      <Ionicons name="ribbon-outline" size={80} color={PRIMARY_COLOR} style={{ marginTop: 50 }} />
-      <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>No certificates yet</Text>
-      <Text style={{ color: '#999', textAlign: 'center', marginTop: 10 }}>Donate blood to earn certificates and badges!</Text>
+  <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
+    <View style={{ flex: 1, backgroundColor: '#EAEAEA' }}>
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.topBarTitle}>My Certificates</Text>
+      </View>
+      <View style={{ padding: 20, alignItems: 'center' }}>
+        <Ionicons name="ribbon-outline" size={80} color={PRIMARY_COLOR} style={{ marginTop: 50 }} />
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>No certificates yet</Text>
+        <Text style={{ color: '#999', textAlign: 'center', marginTop: 10 }}>Donate blood to earn certificates and badges!</Text>
+      </View>
     </View>
   </SafeAreaView>
 );
@@ -57,29 +61,32 @@ export const LocationSettingsScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.topBarTitle}>Location Settings</Text>
-      </View>
-      <View style={{ padding: 20 }}>
-        <View style={styles.settingsRow}>
-          <Text style={styles.settingsRowText}>Use current location</Text>
-          <Switch
-            value={useLocation}
-            onValueChange={toggleLocation}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
-          />
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
+      <View style={{ flex: 1, backgroundColor: '#EAEAEA' }}>
+        <View style={styles.topBar}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.topBarTitle}>Location Settings</Text>
         </View>
-        <View style={styles.settingsRow}>
-          <Text style={styles.settingsRowText}>Show me to nearby hospitals</Text>
-          <Switch
-            value={showNearby}
-            onValueChange={toggleNearby}
-            trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
-          />
+        <View style={{ padding: 20 }}>
+          <View style={styles.settingsRow}>
+            <Text style={styles.settingsRowText}>Use current location</Text>
+            <Switch
+              value={useLocation}
+              onValueChange={toggleLocation}
+              trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
+            />
+          </View>
+          <View style={styles.settingsRow}>
+            <Text style={styles.settingsRowText}>Show me to nearby hospitals</Text>
+            <Switch
+              value={showNearby}
+              onValueChange={toggleNearby}
+              trackColor={{ false: "#eee", true: PRIMARY_COLOR }}
+            />
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -87,40 +94,42 @@ export const LocationSettingsScreen = ({ navigation }) => {
 };
 
 export const NotificationsScreen = ({ navigation }) => {
-  // Empty notifications array for now until a backend endpoint is ready
   const notifications = [];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.topBarTitle}>Notifications</Text>
-      </View>
-      <ScrollView style={{ padding: 15 }} contentContainerStyle={notifications.length === 0 ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : {}}>
-        {notifications.length === 0 ? (
-          <View style={{ alignItems: 'center', marginTop: 50 }}>
-            <Ionicons name="notifications-off-outline" size={60} color="#ccc" />
-            <Text style={{ marginTop: 15, fontSize: 16, color: '#999' }}>No new notifications yet</Text>
-          </View>
-        ) : (
-          notifications.map((notif) => (
-            <View key={notif.id} style={{ flexDirection: 'row', backgroundColor: '#fff', padding: 15, borderRadius: 10, marginBottom: 15, elevation: 2 }}>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#FFF0F0', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
-                <Ionicons name={notif.icon} size={20} color={PRIMARY_COLOR} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#333' }}>{notif.title}</Text>
-                  <Text style={{ fontSize: 12, color: '#999' }}>{notif.time}</Text>
-                </View>
-                <Text style={{ color: '#666', lineHeight: 20 }}>{notif.message}</Text>
-              </View>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
+      <View style={{ flex: 1, backgroundColor: '#EAEAEA' }}>
+        <View style={styles.topBar}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.topBarTitle}>Notifications</Text>
+        </View>
+        <ScrollView style={{ padding: 15 }} contentContainerStyle={notifications.length === 0 ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : {}}>
+          {notifications.length === 0 ? (
+            <View style={{ alignItems: 'center', marginTop: 50 }}>
+              <Ionicons name="notifications-off-outline" size={60} color="#ccc" />
+              <Text style={{ marginTop: 15, fontSize: 16, color: '#999' }}>No new notifications yet</Text>
             </View>
-          ))
-        )}
-      </ScrollView>
+          ) : (
+            notifications.map((notif) => (
+              <View key={notif.id} style={{ flexDirection: 'row', backgroundColor: '#fff', padding: 15, borderRadius: 10, marginBottom: 15, elevation: 2 }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#FFF0F0', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
+                  <Ionicons name={notif.icon} size={20} color={PRIMARY_COLOR} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#333' }}>{notif.title}</Text>
+                    <Text style={{ fontSize: 12, color: '#999' }}>{notif.time}</Text>
+                  </View>
+                  <Text style={{ color: '#666', lineHeight: 20 }}>{notif.message}</Text>
+                </View>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -135,7 +144,7 @@ export const EditProfileScreen = ({ navigation, route }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.2, // Compress heavily to avoid PHP post limits
+      quality: 0.2,
       base64: true,
     });
 
@@ -162,7 +171,6 @@ export const EditProfileScreen = ({ navigation, route }) => {
       if (res.status === 'success') {
         Alert.alert("Success", "Profile updated successfully!");
         await AsyncStorage.setItem('user', JSON.stringify(formData));
-        // Pass the updated user object back to the Settings screen
         navigation.navigate('MainTabs', {
           screen: 'Settings',
           params: { user: formData }
@@ -178,74 +186,77 @@ export const EditProfileScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.topBarTitle}>Edit Profile</Text>
-      </View>
-      <ScrollView style={{ padding: 20 }}>
-        <View style={{ alignItems: 'center', marginBottom: 20 }}>
-          <TouchableOpacity onPress={pickImage} style={styles.avatarCircleLarge}>
-            {formData.profile_image ? (
-              <Image source={{ uri: formData.profile_image }} style={{ width: 100, height: 100, borderRadius: 50 }} />
-            ) : (
-              <Ionicons name="camera" size={40} color={PRIMARY_COLOR} />
-            )}
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
+      <View style={{ flex: 1, backgroundColor: '#EAEAEA' }}>
+        <View style={styles.topBar}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={{ color: PRIMARY_COLOR, marginTop: 10, fontWeight: 'bold' }}>Change Photo</Text>
+          <Text style={styles.topBarTitle}>Edit Profile</Text>
         </View>
-
-        <Text style={styles.label}>Full Name</Text>
-        <TextInput
-          style={styles.inputField}
-          value={formData.name}
-          onChangeText={(v) => setFormData({ ...formData, name: v })}
-        />
-
-        <Text style={styles.label}>Blood Group</Text>
-        <TextInput
-          style={styles.inputField}
-          value={formData.blood_group}
-          onChangeText={(v) => setFormData({ ...formData, blood_group: v })}
-        />
-
-        <Text style={styles.label}>Date of Birth</Text>
-        <TextInput
-          style={styles.inputField}
-          value={formData.dob}
-          onChangeText={(v) => setFormData({ ...formData, dob: v })}
-        />
-
-        <Text style={styles.label}>Gender</Text>
-        <View style={styles.genderRow}>
-          {['Male', 'Female', 'Other'].map((g) => (
-            <TouchableOpacity
-              key={g}
-              style={formData.gender === g ? styles.genderBtnActive : styles.genderBtn}
-              onPress={() => setFormData({ ...formData, gender: g })}
-            >
-              <Text style={formData.gender === g ? styles.genderTextActive : styles.genderText}>{g}</Text>
+        <ScrollView style={{ padding: 20 }}>
+          <View style={{ alignItems: 'center', marginBottom: 20 }}>
+            <TouchableOpacity onPress={pickImage} style={styles.avatarCircleLarge}>
+              {formData.profile_image ? (
+                <Image source={{ uri: formData.profile_image }} style={{ width: 100, height: 100, borderRadius: 50 }} />
+              ) : (
+                <Ionicons name="camera" size={40} color={PRIMARY_COLOR} />
+              )}
             </TouchableOpacity>
-          ))}
-        </View>
+            <Text style={{ color: PRIMARY_COLOR, marginTop: 10, fontWeight: 'bold' }}>Change Photo</Text>
+          </View>
 
-        <Text style={styles.label}>City</Text>
-        <TextInput
-          style={styles.inputField}
-          value={formData.city}
-          onChangeText={(v) => setFormData({ ...formData, city: v })}
-        />
+          <Text style={styles.label}>Full Name</Text>
+          <TextInput
+            style={styles.inputField}
+            value={formData.name}
+            onChangeText={(v) => setFormData({ ...formData, name: v })}
+          />
 
-        <TouchableOpacity
-          style={[styles.btnRed, { marginTop: 30, marginBottom: 40 }]}
-          onPress={handleSave}
-          disabled={loading}
-        >
-          {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Save Changes</Text>}
-        </TouchableOpacity>
-      </ScrollView>
+          <Text style={styles.label}>Blood Group</Text>
+          <TextInput
+            style={styles.inputField}
+            value={formData.blood_group}
+            onChangeText={(v) => setFormData({ ...formData, blood_group: v })}
+          />
+
+          <Text style={styles.label}>Date of Birth</Text>
+          <TextInput
+            style={styles.inputField}
+            value={formData.dob}
+            onChangeText={(v) => setFormData({ ...formData, dob: v })}
+          />
+
+          <Text style={styles.label}>Gender</Text>
+          <View style={styles.genderRow}>
+            {['Male', 'Female', 'Other'].map((g) => (
+              <TouchableOpacity
+                key={g}
+                style={formData.gender === g ? styles.genderBtnActive : styles.genderBtn}
+                onPress={() => setFormData({ ...formData, gender: g })}
+              >
+                <Text style={formData.gender === g ? styles.genderTextActive : styles.genderText}>{g}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <Text style={styles.label}>City</Text>
+          <TextInput
+            style={styles.inputField}
+            value={formData.city}
+            onChangeText={(v) => setFormData({ ...formData, city: v })}
+          />
+
+          <TouchableOpacity
+            style={[styles.btnRed, { marginTop: 30, marginBottom: 40 }]}
+            onPress={handleSave}
+            disabled={loading}
+          >
+            {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Save Changes</Text>}
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -287,7 +298,6 @@ export const SettingsScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (user.mobile && API_URL) {
-      // Dynamic count of user posts
       fetch(`${API_URL}/get_posts.php?mobile=${user.mobile}`)
         .then(res => res.json())
         .then(res => {
@@ -302,7 +312,6 @@ export const SettingsScreen = ({ navigation, route }) => {
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('user');
-      // If there are other tokens, clear them here
       navigation.replace('Welcome');
     } catch (e) {
       console.log('Error clearing async storage on logout:', e);
@@ -311,7 +320,7 @@ export const SettingsScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: PRIMARY_COLOR }}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
 
       {/* 100% Android-safe SVG Curve */}
@@ -351,7 +360,6 @@ export const SettingsScreen = ({ navigation, route }) => {
         {/* Statistics Cards */}
         <View style={styles.statsContainer}>
           <View style={styles.statCard}>
-            {/* Bottom-left concentric rings */}
             <View style={styles.ringOuterLeft} />
             <View style={styles.ringInnerLeft} />
             <View style={styles.redCoreLeft} />
@@ -359,7 +367,6 @@ export const SettingsScreen = ({ navigation, route }) => {
             <Text style={styles.statLabel}>Post</Text>
           </View>
           <View style={styles.statCard}>
-            {/* Top-right concentric rings */}
             <View style={styles.ringOuterRight} />
             <View style={styles.ringInnerRight} />
             <View style={styles.redCoreRight} />
@@ -381,11 +388,9 @@ export const SettingsScreen = ({ navigation, route }) => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('Chat')}>
-            <MaterialCommunityIcons name="message-text-outline" size={48} color={PRIMARY_COLOR} style={styles.menuIcon} />
+            <MaterialCommunityIcons name="chat-outline" size={48} color={PRIMARY_COLOR} style={styles.menuIcon} />
             <Text style={styles.menuText}>Chat</Text>
           </TouchableOpacity>
-
-
 
           <TouchableOpacity style={[styles.menuCard, { marginBottom: 30 }]} onPress={handleLogout}>
             <MaterialCommunityIcons name="logout" size={48} color={PRIMARY_COLOR} style={styles.menuIcon} />
@@ -398,11 +403,10 @@ export const SettingsScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#EAEAEA' },
-  topBar: { backgroundColor: PRIMARY_COLOR, padding: 20, paddingTop: 30 },
+  container: { flex: 1, backgroundColor: PRIMARY_COLOR },
+  topBar: { backgroundColor: PRIMARY_COLOR, padding: 20, paddingTop: 15 },
   topBarTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   topBarSub: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 },
-
 
   avatarWrapper: {
     marginBottom: 25,
@@ -541,7 +545,6 @@ const styles = StyleSheet.create({
   menuIcon: { marginRight: 20, width: 30, textAlign: 'center' },
   menuText: { fontSize: 16, fontWeight: 'bold', color: '#000' },
 
-  /* Other styles needed for the sub-screens in this file */
   profileSection: { flexDirection: 'row', alignItems: 'center', padding: 25, borderBottomWidth: 1, borderBottomColor: '#f5f5f5', backgroundColor: '#fff' },
   avatarCircle: { width: 85, height: 85, borderRadius: 42.5, backgroundColor: '#FFF0F0', justifyContent: 'center', alignItems: 'center' },
   avatarText: { color: PRIMARY_COLOR, fontSize: 32, fontWeight: 'bold' },
@@ -561,11 +564,3 @@ const styles = StyleSheet.create({
   btnRedText: { color: '#fff', fontSize: 16, fontWeight: '600' },
   avatarCircleLarge: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#FFEAEA', justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: PRIMARY_COLOR },
 });
-
-
-
-
-
-
-
-

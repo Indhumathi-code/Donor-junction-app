@@ -143,7 +143,12 @@ const ChatScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.PRIMARY} />
       <View style={[styles.topBar, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
-        <Text style={styles.topBarTitle}>Chats</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingRight: 10 }}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.topBarTitle}>Chats</Text>
+        </View>
         <Ionicons name="search" size={20} color="#fff" />
       </View>
       <FlatList

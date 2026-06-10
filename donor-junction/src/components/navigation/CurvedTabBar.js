@@ -53,7 +53,7 @@ const CurvedTabBar = ({ state, descriptors, navigation }) => {
   let activeIconName = '';
   if (activeRoute.name === 'Home') activeIconName = 'home';
   else if (activeRoute.name === 'Map') activeIconName = 'location';
-  else if (activeRoute.name === 'Posts') activeIconName = 'document-text';
+  else if (activeRoute.name === 'Blog') activeIconName = 'document-text';
   else if (activeRoute.name === 'Chat') activeIconName = 'chatbubble';
   else if (activeRoute.name === 'Settings') activeIconName = 'person';
 
@@ -86,7 +86,7 @@ const CurvedTabBar = ({ state, descriptors, navigation }) => {
           let iconName = '';
           if (route.name === 'Home') iconName = 'home';
           else if (route.name === 'Map') iconName = 'location';
-          else if (route.name === 'Posts') iconName = 'document-text';
+          else if (route.name === 'Blog') iconName = 'document-text';
           else if (route.name === 'Chat') iconName = 'chatbubble';
           else if (route.name === 'Settings') iconName = 'person';
 

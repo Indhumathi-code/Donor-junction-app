@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image, Dimensions 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
 import { Badge, Card } from '../components/common/CommonComponents';
@@ -12,6 +13,7 @@ import { useLoading } from '../contexts/LoadingContext';
 const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation, route }) => {
+  const isFocused = useIsFocused();
   const [user, setUser] = useState(route.params?.user || { name: 'Guest', blood_group: 'N/A', city: 'Unknown' });
   const [campaignsCount, setCampaignsCount] = useState(0);
   const [urgentCampaign, setUrgentCampaign] = useState(null);
@@ -137,7 +139,7 @@ const HomeScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: '#FFFFFF' }]} edges={['right', 'bottom', 'left']}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      {isFocused && <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />}
 
       {/* Top Header */}
       <View style={{
@@ -176,7 +178,7 @@ const HomeScreen = ({ navigation, route }) => {
               position: 'absolute',
               right: 2,
               top: 2,
-              backgroundColor: '#DA0037',
+              backgroundColor: '#faf8f8ff',
               width: 9,
               height: 9,
               borderRadius: 4.5,

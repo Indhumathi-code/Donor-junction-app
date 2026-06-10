@@ -11,57 +11,57 @@ const TipsScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={[styles.container, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%', backgroundColor: '#DA0037' }]} edges={['top', 'right', 'bottom', 'left']}>
-      <StatusBar barStyle="light-content" backgroundColor="#DA0037" />
+      <StatusBar barStyle="light-content" backgroundColor="#fcfcfcff" />
 
       <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
         {/* Top Header */}
-        <View style={[styles.header, { backgroundColor: '#DA0037', borderBottomWidth: 0 }]}>
+        <View style={[styles.header, { backgroundColor: '#fdfdfdff', borderBottomWidth: 0 }]}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+            <Ionicons name="arrow-back" size={24} color="#DA0037" />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: '#FFFFFF' }]}>Health Tips</Text>
+          <Text style={[styles.headerTitle, { color: '#e92424ff' }]}>Health Tips</Text>
           <View style={{ width: 24 }} />
         </View>
 
-      {/* Main Content Area */}
-      <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
-        {/* Main List View */}
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingVertical: 15 }}>
-          {nutritionTips.map((item) => {
-            const isRemoteUrl = typeof item.image === 'string' && (item.image.startsWith('http://') || item.image.startsWith('https://'));
-            const imageSrc = isRemoteUrl ? { uri: item.image } : item.image;
-            const isLocalAsset = !isRemoteUrl;
-            return (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.card}
-                onPress={() => setSelectedItem(item)}
-                activeOpacity={0.85}
-              >
-                <View style={[styles.cardImageContainer, isLocalAsset && { backgroundColor: '#F9FAFB' }]}>
-                  <Image
-                    source={imageSrc}
-                    style={styles.cardImage}
-                    resizeMode={isLocalAsset ? "contain" : "cover"}
-                  />
-                </View>
-                <View style={styles.cardContent}>
-                  <View style={styles.badgeRow}>
-                    <View style={[styles.typeBadge, { backgroundColor: item.badgeColor }]}>
-                      <Text style={styles.typeText}>{item.type}</Text>
-                    </View>
-                    <View style={styles.tagBadge}>
-                      <Text style={styles.tagText}>{item.tag}</Text>
-                    </View>
+        {/* Main Content Area */}
+        <View style={{ flex: 1, backgroundColor: '#faf7f7ff' }}>
+          {/* Main List View */}
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingVertical: 15 }}>
+            {nutritionTips.map((item) => {
+              const isRemoteUrl = typeof item.image === 'string' && (item.image.startsWith('http://') || item.image.startsWith('https://'));
+              const imageSrc = isRemoteUrl ? { uri: item.image } : item.image;
+              const isLocalAsset = !isRemoteUrl;
+              return (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.card}
+                  onPress={() => setSelectedItem(item)}
+                  activeOpacity={0.85}
+                >
+                  <View style={[styles.cardImageContainer, isLocalAsset && { backgroundColor: '#F9FAFB' }]}>
+                    <Image
+                      source={imageSrc}
+                      style={styles.cardImage}
+                      resizeMode={isLocalAsset ? "contain" : "cover"}
+                    />
                   </View>
-                  <Text style={styles.cardTitle} numberOfLines={1}>{item.name}</Text>
-                  <Text style={styles.cardTeaser} numberOfLines={2}>{item.teaser}</Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
+                  <View style={styles.cardContent}>
+                    <View style={styles.badgeRow}>
+                      <View style={[styles.typeBadge, { backgroundColor: item.badgeColor }]}>
+                        <Text style={styles.typeText}>{item.type}</Text>
+                      </View>
+                      <View style={styles.tagBadge}>
+                        <Text style={styles.tagText}>{item.tag}</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.cardTitle} numberOfLines={1}>{item.name}</Text>
+                    <Text style={styles.cardTeaser} numberOfLines={2}>{item.teaser}</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
       </View>
 
       {/* Full Screen Details Modal */}
@@ -82,7 +82,7 @@ const TipsScreen = ({ navigation }) => {
           </View>
 
           {/* Modal Content Area */}
-          <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
+          <View style={{ flex: 1, backgroundColor: '#fdfdfdff' }}>
             {selectedItem && (
               <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
                 {/* Centered Image */}
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#e2dcddff',
     borderRadius: 15,
     marginHorizontal: 15,
     marginBottom: 15,

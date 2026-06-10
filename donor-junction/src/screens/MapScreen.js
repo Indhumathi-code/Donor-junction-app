@@ -225,9 +225,14 @@ const MapScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.PRIMARY} />
       <View style={[styles.topBar, styles.topBarRow]}>
-        <View>
-          <Text style={styles.topBarTitle}>{districtName}</Text>
-          <Text style={styles.topBarSub}>Live tracking in TN</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingRight: 10 }}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <View>
+            <Text style={styles.topBarTitle}>{districtName}</Text>
+            <Text style={styles.topBarSub}>Live tracking in TN</Text>
+          </View>
         </View>
         <TouchableOpacity onPress={() => {
           triggerExactLocation();
