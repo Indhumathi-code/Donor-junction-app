@@ -40,7 +40,7 @@ const LoginScreen = ({ navigation }) => {
           navigation.navigate('Register', { mobile: cleanedMobile });
         }
       } else {
-        Alert.alert("Error", res.message);
+        Alert.alert("Error", res.message || res.error || "An unknown error occurred.");
       }
     } catch (error) {
       Alert.alert("Connection Error", "Cannot reach the server to send OTP.");

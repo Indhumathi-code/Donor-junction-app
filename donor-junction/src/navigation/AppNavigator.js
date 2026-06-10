@@ -28,17 +28,43 @@ const Tab = createBottomTabNavigator();
 
 import CurvedTabBar from '../components/navigation/CurvedTabBar';
 
+const HomeStack = createStackNavigator();
+const HomeStackScreen = ({ route }) => (
+  <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+    <HomeStack.Screen name="HomeMain" component={HomeScreen} initialParams={{ user: route.params?.user }} />
+    <HomeStack.Screen name="Map" component={MapScreen} />
+    <HomeStack.Screen name="Chat" component={ChatScreen} />
+    <HomeStack.Screen name="Tips" component={TipsScreen} />
+    <HomeStack.Screen name="ChatRoom" component={ChatRoomScreen} />
+    <HomeStack.Screen name="Certificates" component={CertificatesScreen} />
+  </HomeStack.Navigator>
+);
+
+const SettingsStack = createStackNavigator();
+const SettingsStackScreen = ({ route }) => (
+  <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
+    <SettingsStack.Screen name="SettingsMain" component={SettingsScreen} initialParams={{ user: route.params?.user, API_URL }} />
+    <SettingsStack.Screen name="EditProfile" component={EditProfileScreen} initialParams={{ API_URL }} />
+    <SettingsStack.Screen name="LocationSettings" component={LocationSettingsScreen} />
+    <SettingsStack.Screen name="Notifications" component={NotificationsScreen} />
+    <SettingsStack.Screen name="MyPosts" component={MyPostsScreen} />
+    <SettingsStack.Screen name="Campaigns" component={CampaignsScreen} />
+    <SettingsStack.Screen name="Chat" component={ChatScreen} />
+    <SettingsStack.Screen name="Certificates" component={CertificatesScreen} />
+  </SettingsStack.Navigator>
+);
+
 const MainTabs = ({ route }) => (
-  <Tab.Navigator 
+  <Tab.Navigator
     initialRouteName="Home"
     tabBar={(props) => <CurvedTabBar {...props} />}
-    screenOptions={({ route: r }) => ({
+    screenOptions={{
       headerShown: false,
-    })}
+    }}
   >
     <Tab.Screen name="Posts" component={PostsScreen} />
-    <Tab.Screen name="Home" component={HomeScreen} initialParams={{ user: route.params?.user }} />
-    <Tab.Screen name="Settings" component={SettingsScreen} initialParams={{ user: route.params?.user, API_URL }} />
+    <Tab.Screen name="Home" component={HomeStackScreen} initialParams={{ user: route.params?.user }} />
+    <Tab.Screen name="Settings" component={SettingsStackScreen} initialParams={{ user: route.params?.user }} />
   </Tab.Navigator>
 );
 
@@ -50,19 +76,9 @@ const AppNavigator = () => (
     <Stack.Screen name="OTP" component={OTPScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
     <Stack.Screen name="MainTabs" component={MainTabs} />
-    <Stack.Screen name="Map" component={MapScreen} />
-    <Stack.Screen name="Chat" component={ChatScreen} />
-    <Stack.Screen name="Tips" component={TipsScreen} />
-    <Stack.Screen name="ChatRoom" component={ChatRoomScreen} />
-    <Stack.Screen name="EditProfile" component={EditProfileScreen} initialParams={{ API_URL }} />
     <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
     <Stack.Screen name="Schedule" component={ScheduleScreen} />
-    <Stack.Screen name="Certificates" component={CertificatesScreen} />
-    <Stack.Screen name="Notifications" component={NotificationsScreen} />
-    <Stack.Screen name="LocationSettings" component={LocationSettingsScreen} />
     <Stack.Screen name="CreatePost" component={CreatePostScreen} />
-    <Stack.Screen name="MyPosts" component={MyPostsScreen} />
-    <Stack.Screen name="Campaigns" component={CampaignsScreen} />
   </Stack.Navigator>
 );
 
