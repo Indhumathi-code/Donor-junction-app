@@ -42,23 +42,16 @@ const MapView = ({ children, style, initialRegion, onChatPress, userLocation }) 
             cursor: pointer;
             text-align: center;
           }
-          .user-dot-container {
+          .user-pin-container {
             display: flex;
             align-items: center;
             justify-content: center;
+            filter: drop-shadow(0px 5px 6px rgba(0,0,0,0.4));
+            animation: bounce 1.5s infinite ease-in-out;
           }
-          .user-dot {
-            width: 12px;
-            height: 12px;
-            background-color: #4CD964;
-            border: 2.5px solid white;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(76, 217, 100, 0.85);
-            animation: pulse 1.4s infinite alternate;
-          }
-          @keyframes pulse {
-            0% { transform: scale(0.85); box-shadow: 0 0 4px rgba(76, 217, 100, 0.6); }
-            100% { transform: scale(1.3); box-shadow: 0 0 16px rgba(76, 217, 100, 1.0); }
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); filter: drop-shadow(0px 11px 8px rgba(0,0,0,0.2)); }
           }
         </style>
       </head>
@@ -74,8 +67,9 @@ const MapView = ({ children, style, initialRegion, onChatPress, userLocation }) 
           }
           
           var map = L.map('map').setView([${lat}, ${lng}], 12);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
+          L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            attribution: '© Google',
+            maxZoom: 20
           }).addTo(map);
 
           if (${userLocation && userLocation.latitude && userLocation.longitude ? 'true' : 'false'}) {
@@ -110,9 +104,17 @@ const MapView = ({ children, style, initialRegion, onChatPress, userLocation }) 
               }
             }
 
-            var color = m.type === 'hospital' ? '#0C447C' : '#DA0037';
-            var iconHtml = '<div style="background-color:' + color + ';width:28px;height:28px;border-radius:14px;border:2px solid white;box-shadow:0 2.5px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:10px;font-family:sans-serif;">' + initials + '</div>';
-            var customIcon = L.divIcon({ html: iconHtml, className: '', iconSize: [28,28], iconAnchor: [14,14] });
+            var color = m.type === 'hospital' ? '#2196F3' : '#DA0037';
+            var iconHtml = \`
+              <div style="filter: drop-shadow(0px 5px 6px rgba(0,0,0,0.4)); display: flex; align-items: center; justify-content: center;">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 23.5s8-8 8-12.5a8 8 0 1 0-16 0c0 4.5 8 12.5 8 12.5z" fill="\${color}" stroke="white" stroke-width="1.5"/>
+                  <circle cx="12" cy="11" r="5" fill="white"/>
+                  <text x="12" y="11.5" fill="\${color}" font-size="4.5" font-family="sans-serif" font-weight="900" text-anchor="middle" dominant-baseline="central">\${initials}</text>
+                </svg>
+              </div>
+            \`;
+            var customIcon = L.divIcon({ html: iconHtml, className: '', iconSize: [44,44], iconAnchor: [22,42] });
             var marker = L.marker([m.lat, m.lng], { icon: customIcon }).addTo(map);
             
             if(m.title) {
@@ -125,11 +127,21 @@ const MapView = ({ children, style, initialRegion, onChatPress, userLocation }) 
 
           // Draw user marker last with high zIndex so it's always visible above others
           if (${userLocation && userLocation.latitude && userLocation.longitude ? 'true' : 'false'}) {
+            var userColor = '#4CD964';
+            var userIconHtml = \`
+              <div class="user-pin-container">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 23.5s8-8 8-12.5a8 8 0 1 0-16 0c0 4.5 8 12.5 8 12.5z" fill="\${userColor}" stroke="white" stroke-width="1.5"/>
+                  <circle cx="12" cy="11" r="4.5" fill="white"/>
+                  <circle cx="12" cy="11" r="2" fill="\${userColor}"/>
+                </svg>
+              </div>
+            \`;
             var userIcon = L.divIcon({
-              className: 'user-dot-container',
-              html: '<div class="user-dot"></div>',
-              iconSize: [16, 16],
-              iconAnchor: [8, 8]
+              className: '',
+              html: userIconHtml,
+              iconSize: [44, 44],
+              iconAnchor: [22, 42]
             });
             L.marker([${userLocation.latitude}, ${userLocation.longitude}], { icon: userIcon, zIndexOffset: 1000 })
               .bindPopup('<b>My Location</b><br>You are here')
@@ -176,9 +188,6 @@ const MapView = ({ children, style, initialRegion, onChatPress, userLocation }) 
           }}
         />
       )}
-      <View style={styles.overlay}>
-        <Text style={styles.overlayText}>Live Map (Web Preview)</Text>
-      </View>
     </View>
   );
 };
