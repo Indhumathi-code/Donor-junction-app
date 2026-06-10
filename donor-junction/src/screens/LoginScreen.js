@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, StatusBar, ActivityIndicator, 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
-import SmallSupermanLoader from '../components/SmallSupermanLoader';
 
 const fetchWithTimeout = (url, options = {}, timeout = 5000) => {
   return Promise.race([
@@ -77,7 +76,7 @@ const LoginScreen = ({ navigation }) => {
           onPress={handleSendOTP}
           disabled={loading}
         >
-          {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Send OTP</Text>}
+          {loading ? <ActivityIndicator size="small" color="#FFFFFF" /> : <Text style={styles.btnRedText}>Send OTP</Text>}
         </TouchableOpacity>
 
         <TouchableOpacity

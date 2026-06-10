@@ -36,10 +36,8 @@ const MainTabs = ({ route }) => (
       headerShown: false,
     })}
   >
-    <Tab.Screen name="Home" component={HomeScreen} initialParams={{ user: route.params?.user }} />
-    <Tab.Screen name="Map" component={MapScreen} />
     <Tab.Screen name="Posts" component={PostsScreen} />
-    <Tab.Screen name="Chat" component={ChatScreen} initialParams={{ user: route.params?.user }} />
+    <Tab.Screen name="Home" component={HomeScreen} initialParams={{ user: route.params?.user }} />
     <Tab.Screen name="Settings" component={SettingsScreen} initialParams={{ user: route.params?.user, API_URL }} />
   </Tab.Navigator>
 );
@@ -52,6 +50,8 @@ const AppNavigator = () => (
     <Stack.Screen name="OTP" component={OTPScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
     <Stack.Screen name="MainTabs" component={MainTabs} />
+    <Stack.Screen name="Map" component={MapScreen} />
+    <Stack.Screen name="Chat" component={ChatScreen} />
     <Stack.Screen name="Tips" component={TipsScreen} />
     <Stack.Screen name="ChatRoom" component={ChatRoomScreen} />
     <Stack.Screen name="EditProfile" component={EditProfileScreen} initialParams={{ API_URL }} />

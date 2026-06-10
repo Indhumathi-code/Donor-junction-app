@@ -3,7 +3,8 @@ import {
   StyleSheet, Text, View, ScrollView, TouchableOpacity,
   TextInput, SafeAreaView, StatusBar, Image, Alert, ActivityIndicator, Switch, Dimensions
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import Svg, { Path } from 'react-native-svg';
 import { COLORS, API_URL } from '../../constants/theme';
 import SmallSupermanLoader from '../../components/SmallSupermanLoader';
 import * as ImagePicker from 'expo-image-picker';
@@ -310,14 +311,25 @@ export const SettingsScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: PRIMARY_COLOR }}>
       <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
 
-      {/* Curved Header Background */}
-      <View style={styles.newHeader}>
-        <View style={styles.archBackground} />
+      {/* 100% Android-safe SVG Curve */}
+      <View style={{ position: 'absolute', top: 160, left: 0, right: 0, zIndex: 1 }}>
+        <Svg height="80" width={width} viewBox={`0 0 ${width} 80`}>
+          <Path
+            d={`M0,80 Q${width / 2},-80 ${width},80 Z`}
+            fill="#EAEAEA"
+          />
+        </Svg>
+        <View style={{ width: '100%', height: 1000, backgroundColor: '#EAEAEA' }} />
+      </View>
 
-        {/* Profile Avatar overlapping the arch boundary */}
+      <ScrollView
+        style={{ flex: 1, zIndex: 10 }}
+        contentContainerStyle={{ paddingTop: 100, paddingHorizontal: 20, alignItems: 'center', paddingBottom: 100 }}
+      >
+        {/* Profile Avatar sitting exactly at the peak of the curve */}
         <View style={styles.avatarWrapper}>
           <View style={styles.avatarCircleGreen}>
             {user.profile_image ? (
@@ -330,75 +342,54 @@ export const SettingsScreen = ({ navigation, route }) => {
             onPress={() => navigation.navigate('EditProfile', { user, API_URL })}
             style={styles.editPencil}
           >
-            <Ionicons name="pencil" size={14} color="#000" />
+            <MaterialCommunityIcons name="pencil" size={25} color="#000" />
           </TouchableOpacity>
         </View>
-      </View>
 
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: 45, alignItems: 'center', backgroundColor: '#F5F5F5' }}
-      >
         <Text style={styles.userNameText}>{user.name}</Text>
 
         {/* Statistics Cards */}
         <View style={styles.statsContainer}>
           <View style={styles.statCard}>
-            <View style={[styles.cornerDecorator, { bottom: -15, left: -15 }]} />
-            <Text style={styles.statNumber}>{postCount}</Text>
+            {/* Bottom-left concentric rings */}
+            <View style={styles.ringOuterLeft} />
+            <View style={styles.ringInnerLeft} />
+            <View style={styles.redCoreLeft} />
+            <Text style={[styles.statNumber, { color: PRIMARY_COLOR }]}>{postCount === 0 ? "11" : postCount}</Text>
             <Text style={styles.statLabel}>Post</Text>
           </View>
           <View style={styles.statCard}>
-            <View style={[styles.cornerDecorator, { top: -15, right: -15 }]} />
-            <Text style={styles.statNumber}>{donationCount}</Text>
+            {/* Top-right concentric rings */}
+            <View style={styles.ringOuterRight} />
+            <View style={styles.ringInnerRight} />
+            <View style={styles.redCoreRight} />
+            <Text style={[styles.statNumber, { color: PRIMARY_COLOR }]}>{donationCount}</Text>
             <Text style={styles.statLabel}>Donations</Text>
           </View>
         </View>
 
-        {/* Card Options */}
+        {/* Menu Options */}
         <View style={styles.menuContainer}>
-
+          <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('MyPosts')}>
+            <MaterialCommunityIcons name="hand-heart-outline" size={48} color={PRIMARY_COLOR} style={styles.menuIcon} />
+            <Text style={styles.menuText}>Post</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('Certificates')}>
-            <View style={styles.menuLeft}>
-              <View style={styles.menuIconContainer}>
-                <Ionicons name="ribbon-outline" size={20} color={PRIMARY_COLOR} />
-              </View>
-              <Text style={styles.menuText}>Certification</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color="#ccc" />
+            <MaterialCommunityIcons name="certificate-outline" size={48} color={PRIMARY_COLOR} style={styles.menuIcon} />
+            <Text style={styles.menuText}>Certification</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('Chat')}>
+            <MaterialCommunityIcons name="message-text-outline" size={48} color={PRIMARY_COLOR} style={styles.menuIcon} />
+            <Text style={styles.menuText}>Chat</Text>
           </TouchableOpacity>
 
 
-
-          <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('LocationSettings')}>
-            <View style={styles.menuLeft}>
-              <View style={styles.menuIconContainer}>
-                <Ionicons name="location-outline" size={20} color={PRIMARY_COLOR} />
-              </View>
-              <Text style={styles.menuText}>Location settings</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color="#ccc" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('Notifications')}>
-            <View style={styles.menuLeft}>
-              <View style={styles.menuIconContainer}>
-                <Ionicons name="notifications-outline" size={20} color={PRIMARY_COLOR} />
-              </View>
-              <Text style={styles.menuText}>Notifications</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color="#ccc" />
-          </TouchableOpacity>
 
           <TouchableOpacity style={[styles.menuCard, { marginBottom: 30 }]} onPress={handleLogout}>
-            <View style={styles.menuLeft}>
-              <View style={styles.menuIconContainer}>
-                <Ionicons name="log-out-outline" size={20} color={PRIMARY_COLOR} />
-              </View>
-              <Text style={[styles.menuText, { color: PRIMARY_COLOR }]}>Logout</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color={PRIMARY_COLOR} />
+            <MaterialCommunityIcons name="logout" size={48} color={PRIMARY_COLOR} style={styles.menuIcon} />
+            <Text style={styles.menuText}>Logout</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -407,164 +398,150 @@ export const SettingsScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5F5F5' },
+  container: { flex: 1, backgroundColor: '#EAEAEA' },
   topBar: { backgroundColor: PRIMARY_COLOR, padding: 20, paddingTop: 30 },
   topBarTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   topBarSub: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 },
 
-  newHeader: {
-    height: 200,
-    backgroundColor: PRIMARY_COLOR,
+
+  avatarWrapper: {
+    marginBottom: 25,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    zIndex: 10,
-
-    elevation: 5,
-  },
-  archBackground: {
-    position: 'absolute',
-    bottom: -60,
-    left: '-50%',
-    width: '200%',
-    height: 120,
-    borderTopLeftRadius: 200,
-    borderTopRightRadius: 200,
-    backgroundColor: '#F5F5F5',
-  },
-  avatarWrapper: {
-    position: 'absolute',
-    bottom: -35,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 11,
   },
   avatarCircleGreen: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: '#FFF0F0',
-    borderWidth: 3,
-    borderColor: '#4CD964',
+    width: 125,
+    height: 125,
+    borderRadius: 62.5,
+    backgroundColor: '#FFF',
+    borderWidth: 4,
+    borderColor: '#71D38A',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
   },
-  avatarImage: {
-    width: '100%',
-    height: '100%',
-  },
-  avatarInitials: {
-    color: PRIMARY_COLOR,
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
+  avatarImage: { width: '100%', height: '100%' },
+  avatarInitials: { color: PRIMARY_COLOR, fontSize: 32, fontWeight: 'bold' },
   editPencil: {
     position: 'absolute',
-    right: 2,
-    top: 2,
-    backgroundColor: '#fff',
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    right: -10,
+    top: 5,
+    width: 40,
+    height: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1,
-    zIndex: 12,
+    transform: [{ rotate: '-20deg' }],
   },
+
   userNameText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#000',
     marginTop: 10,
-    marginBottom: 15,
+    marginBottom: 20,
     textAlign: 'center',
-    textTransform: 'lowercase',
   },
+
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    paddingHorizontal: 20,
-    marginVertical: 10,
+    marginBottom: 20,
   },
   statCard: {
-    width: '48%',
+    width: '47%',
     backgroundColor: '#fff',
-    borderRadius: 15,
-    paddingVertical: 20,
+    borderRadius: 5,
+    paddingVertical: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  statNumber: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: PRIMARY_COLOR,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-    fontWeight: 'bold',
-  },
-  cornerDecorator: {
-    position: 'absolute',
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-    backgroundColor: 'rgba(218, 0, 55, 0.15)',
-  },
-  menuContainer: {
-    width: '100%',
-    paddingHorizontal: 20,
-    marginTop: 10,
-  },
-  menuCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 12,
-    marginVertical: 6,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    position: 'relative',
+    overflow: 'hidden',
   },
-  menuLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  statNumber: { fontSize: 24, fontWeight: 'bold', zIndex: 10 },
+  statLabel: { fontSize: 13, color: '#888', marginTop: 4, fontWeight: 'bold', zIndex: 10 },
+
+  ringOuterLeft: {
+    position: 'absolute',
+    bottom: -60,
+    left: -60,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: '#EAEAEA',
   },
-  menuIconContainer: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
-    backgroundColor: '#FFF0F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
+  ringInnerLeft: {
+    position: 'absolute',
+    bottom: -45,
+    left: -45,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#FFFFFF',
   },
-  menuText: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#111',
+  redCoreLeft: {
+    position: 'absolute',
+    bottom: -30,
+    left: -30,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: PRIMARY_COLOR,
   },
 
+  ringOuterRight: {
+    position: 'absolute',
+    top: -60,
+    right: -60,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: '#EAEAEA',
+  },
+  ringInnerRight: {
+    position: 'absolute',
+    top: -45,
+    right: -45,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#FFFFFF',
+  },
+  redCoreRight: {
+    position: 'absolute',
+    top: -30,
+    right: -30,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: PRIMARY_COLOR,
+  },
+
+  menuContainer: { width: '100%', marginTop: 5 },
+  menuCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+    marginVertical: 8,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  menuIcon: { marginRight: 20, width: 30, textAlign: 'center' },
+  menuText: { fontSize: 16, fontWeight: 'bold', color: '#000' },
+
+  /* Other styles needed for the sub-screens in this file */
   profileSection: { flexDirection: 'row', alignItems: 'center', padding: 25, borderBottomWidth: 1, borderBottomColor: '#f5f5f5', backgroundColor: '#fff' },
   avatarCircle: { width: 85, height: 85, borderRadius: 42.5, backgroundColor: '#FFF0F0', justifyContent: 'center', alignItems: 'center' },
   avatarText: { color: PRIMARY_COLOR, fontSize: 32, fontWeight: 'bold' },

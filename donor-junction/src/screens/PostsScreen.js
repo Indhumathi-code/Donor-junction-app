@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, API_URL } from '../constants/theme';
-import SupermanLoader from '../components/SupermanLoader'; // IMPORTED THE NEW LOADER HERE
 
 const fetchWithTimeout = (url, options = {}, timeout = 1200) => {
   return Promise.race([
@@ -416,7 +415,9 @@ const PostsScreen = ({ navigation, route }) => {
       {/* Main Content Area */}
       <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
         {loading ? (
-          <SupermanLoader text="Fetching latest posts..." />
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#DA0037" />
+          </View>
         ) : (
           <FlatList
             data={posts}
