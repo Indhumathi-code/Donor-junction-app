@@ -5,7 +5,7 @@ export const nutritionTips = [
       type: "Non-Veg",
       badgeColor: "#8B0000",
       tag: "Iron Rich",
-      image: require('../assets/images/nonveg_tips.png'),
+      image: require('../assets/images/red_meat.png'),
       teaser: "Red meats without fats like beef are one of the most effective foods when it comes to curing anemia.",
       nutrient: "Heme Iron",
       benefits: [

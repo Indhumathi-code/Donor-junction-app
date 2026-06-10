@@ -9,7 +9,7 @@ import { Badge, Card } from '../components/common/CommonComponents';
 import { nutritionTips } from '../data/nutritionTipsData';
 import { useLoading } from '../contexts/LoadingContext';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation, route }) => {
   const [user, setUser] = useState(route.params?.user || { name: 'Guest', blood_group: 'N/A', city: 'Unknown' });
@@ -25,7 +25,7 @@ const HomeScreen = ({ navigation, route }) => {
     const interval = setInterval(() => {
       currentIndexRef.current = (currentIndexRef.current + 1) % nutritionTips.length;
       if (carouselRef.current) {
-        const itemWidth = (width * 0.85) + 15;
+        const itemWidth = (width * 0.88) + 15;
         carouselRef.current.scrollTo({ x: currentIndexRef.current * itemWidth, animated: true });
       }
     }, 6000);
@@ -105,46 +105,99 @@ const HomeScreen = ({ navigation, route }) => {
   }, []);
 
 
+  const shortcuts = [
+    {
+      label: 'Health Tips',
+      image: require('../assets/images/health_tips_icon.png'),
+      onPress: () => navigation.navigate('Tips'),
+    },
+    {
+      label: 'Chat',
+      image: require('../assets/images/chat_icon.png'),
+      onPress: () => navigation.navigate('Chat'),
+    },
+    {
+      label: 'Find Donor',
+      image: require('../assets/images/find_donor_icon.png'),
+      onPress: () => navigation.navigate('Map'),
+    },
+    {
+      label: 'Post',
+      image: require('../assets/images/post_icon.png'),
+      onPress: () => navigation.navigate('Posts'),
+    },
+    {
+      label: 'Certification',
+      image: require('../assets/images/certification_icon.png'),
+      onPress: () => navigation.navigate('Certificates'),
+    },
+  ];
+
+  const itemWidth = (width - 70) / 3;
+
   return (
-    <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.PRIMARY} />
-      <View style={[styles.topBar, styles.topBarRow]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#FFFFFF' }]} edges={['right', 'bottom', 'left']}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+
+      {/* Top Header */}
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 45,
+        paddingBottom: 15,
+        backgroundColor: '#FFFFFF',
+      }}>
         <View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
-            <Text style={styles.topBarTitle}>Hello, {user.name} </Text>
-            <Badge color="rgba(255,255,255,.2)" textColor="#fff">{user.blood_group}</Badge>
-          </View>
-          <Text style={styles.topBarSub}>Eligible to donate • {user.city}</Text>
+          <Text style={{
+            color: '#8E8E93',
+            fontSize: 12,
+            fontWeight: 'bold',
+            letterSpacing: 0.5,
+            textTransform: 'uppercase',
+            marginBottom: 2
+          }}>
+            Welcome
+          </Text>
+          <Text style={{
+            color: '#000000',
+            fontSize: 22,
+            fontWeight: 'bold',
+          }}>
+            {(user.name || 'guest').toLowerCase()}{' '}
+            <Text style={{ color: '#DA0037' }}>{user.blood_group || 'N/A'}</Text>
+          </Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
-          <View style={{ position: 'relative' }}>
-            <Ionicons name="notifications-outline" size={24} color="#fff" />
+          <View style={{ position: 'relative', padding: 4 }}>
+            <Ionicons name="notifications-outline" size={26} color="#000000" />
             <View style={{
               position: 'absolute',
-              right: -2,
-              top: -2,
-              backgroundColor: '#FFEB3B',
-              width: 10,
-              height: 10,
-              borderRadius: 5,
+              right: 2,
+              top: 2,
+              backgroundColor: '#DA0037',
+              width: 9,
+              height: 9,
+              borderRadius: 4.5,
               borderWidth: 1.5,
-              borderColor: COLORS.PRIMARY
+              borderColor: '#FFFFFF'
             }} />
           </View>
         </TouchableOpacity>
       </View>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 100 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 15 }}>
-          <Text style={styles.sectionTitle}>Health tips</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Tips')} style={{ paddingRight: 15 }}>
-            {/* <Text style={{ color: COLORS.PRIMARY, fontSize: 14, fontWeight: '600' }}>See all</Text> */}
-          </TouchableOpacity>
-        </View>
+
+      <ScrollView style={{ flex: 1, backgroundColor: '#FFFFFF' }} contentContainerStyle={{ paddingBottom: 100 }}>
+        {/* Carousel */}
         <ScrollView
           ref={carouselRef}
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingLeft: 15, paddingBottom: 20 }}
+          contentContainerStyle={{ paddingLeft: 20, paddingBottom: 25, paddingTop: 10, paddingRight: 20 }}
+          snapToInterval={width * 0.88 + 15}
+          snapToAlignment="start"
+          decelerationRate="fast"
+          disableIntervalMomentum={true}
         >
           {nutritionTips.map((item) => {
             const isRemoteUrl = typeof item.image === 'string' && (item.image.startsWith('http://') || item.image.startsWith('https://'));
@@ -153,13 +206,12 @@ const HomeScreen = ({ navigation, route }) => {
               <TouchableOpacity
                 key={item.id.toString()}
                 style={{
-                  width: width * 0.85,
-                  marginRight: 20,
-                  backgroundColor: '#dd8a8a46',
-                  borderRadius: 30,
+                  width: width * 0.88,
+                  backgroundColor: '#F0F2F4',
+                  borderRadius: 20,
                   padding: 15,
-                  marginRight: 20,
-                  height: 200,
+                  marginRight: 15,
+                  height: 150,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
@@ -167,57 +219,114 @@ const HomeScreen = ({ navigation, route }) => {
               >
                 <Image
                   source={imageSrc}
-                  style={{ width: 160, height: 150, borderRadius: 10, marginRight: 15, backgroundColor: '#FFF' }}
+                  style={{ width: 120, height: 120, borderRadius: 8, marginRight: 15, backgroundColor: '#FFFFFF' }}
                   resizeMode="cover"
                 />
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#111827', marginBottom: 4 }}>{item.name}</Text>
-                  <Text style={{ fontSize: 12, color: '#4B5563', lineHeight: 16 }} numberOfLines={4}>{item.teaser}</Text>
+                  <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#000000', marginBottom: 4 }} numberOfLines={1}>{item.name}</Text>
+                  <Text style={{ fontSize: 12, color: '#333333', lineHeight: 18 }} numberOfLines={4}>{item.teaser}</Text>
                 </View>
               </TouchableOpacity>
             );
           })}
         </ScrollView>
 
-        <View style={styles.shortcutGrid}>
-          <TouchableOpacity style={styles.shortcutItem} onPress={() => navigation.navigate('Map')}>
-            <Ionicons name="location" size={24} color={COLORS.PRIMARY} />
-            <Text style={styles.shortcutText}>Find donors</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.shortcutItem} onPress={() => navigation.navigate('Posts')}>
-            <Ionicons name="document-text" size={24} color={COLORS.PRIMARY} />
-            <Text style={styles.shortcutText}>Blood posts</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.shortcutItem} onPress={() => navigation.navigate('Chat')}>
-            <Ionicons name="chatbubble" size={24} color={COLORS.PRIMARY} />
-            <Text style={styles.shortcutText}>Chat</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.shortcutItem} onPress={() => navigation.navigate('Tips')}>
-            <Ionicons name="heart" size={24} color={COLORS.PRIMARY} />
-            <Text style={styles.shortcutText}>Health tips</Text>
-          </TouchableOpacity>
-        </View>
+        {/* Lower gray container for shortcuts and additional features */}
+        <View style={{
+          backgroundColor: '#EAEAEA',
+          flex: 1,
+          paddingTop: 25,
+          paddingBottom: 40,
+          minHeight: height - 320,
+        }}>
+          {/* Grid of Shortcuts (3 on Row 1, 2 on Row 2) */}
+          <View style={{ paddingHorizontal: 20 }}>
+            {/* Row 1: Health Tips, Chat, Find Donor */}
+            <View style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              gap: 15,
+              marginBottom: 15,
+            }}>
+              {shortcuts.slice(0, 3).map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={{
+                    width: itemWidth,
+                    height: itemWidth,
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 8,
+                    shadowColor: '#000000',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.05,
+                    shadowRadius: 8,
+                    elevation: 3,
+                  }}
+                  onPress={item.onPress}
+                  activeOpacity={0.85}
+                >
+                  <Image
+                    source={item.image}
+                    style={{ width: 45, height: 45, marginBottom: 8 }}
+                    resizeMode="contain"
+                  />
+                  <Text style={{
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    color: '#000000',
+                    textAlign: 'center',
+                  }}>
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
 
-        <Text style={styles.sectionTitle}>Urgent near you</Text>
-        <Card style={{ marginHorizontal: 15 }} onPress={() => navigation.navigate('Campaigns')}>
-          <Text style={styles.cardTitle}>{urgentCampaign?.title || 'A+ blood needed'}</Text>
-          <Text style={styles.cardSub}>{urgentCampaign?.place || 'Apollo Hospital, Chennai'} • 2.1 km</Text>
-          <Badge color="#ffeaea" textColor="#A32D2D">{urgentCampaign?.status || 'Urgent'}</Badge>
-        </Card>
-
-        <Text style={styles.sectionTitle}>Your stats</Text>
-        <View style={[styles.statsRow, { flexWrap: 'wrap' }]}>
-          <View style={[styles.statBox, { backgroundColor: '#ffeaea' }]}>
-            <Text style={[styles.statValue, { color: '#A32D2D' }]}>3</Text>
-            <Text style={[styles.statLabel, { color: '#A32D2D' }]}>donations</Text>
-          </View>
-          <View style={[styles.statBox, { backgroundColor: '#eaf3de' }]}>
-            <Text style={[styles.statValue, { color: '#27500A' }]}>152</Text>
-            <Text style={[styles.statLabel, { color: '#27500A' }]}>days since last</Text>
-          </View>
-          <View style={[styles.statBox, { backgroundColor: '#e6f1fb' }]}>
-            <Text style={[styles.statValue, { color: '#0C447C' }]}>{campaignsCount}</Text>
-            <Text style={[styles.statLabel, { color: '#0C447C' }]}>campaigns</Text>
+            {/* Row 2: Post, Certification */}
+            <View style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              gap: 15,
+            }}>
+              {shortcuts.slice(3, 5).map((item, index) => (
+                <TouchableOpacity
+                  key={index + 3}
+                  style={{
+                    width: itemWidth,
+                    height: itemWidth,
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 8,
+                    shadowColor: '#000000',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.05,
+                    shadowRadius: 8,
+                    elevation: 3,
+                  }}
+                  onPress={item.onPress}
+                  activeOpacity={0.85}
+                >
+                  <Image
+                    source={item.image}
+                    style={{ width: 45, height: 45, marginBottom: 8 }}
+                    resizeMode="contain"
+                  />
+                  <Text style={{
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    color: '#000000',
+                    textAlign: 'center',
+                  }}>
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         </View>
       </ScrollView>
