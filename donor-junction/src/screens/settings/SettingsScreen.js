@@ -4,6 +4,8 @@ import {
   TextInput, SafeAreaView, StatusBar, Image, Alert, ActivityIndicator, Switch, Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { COLORS, API_URL } from '../../constants/theme';
+import SmallSupermanLoader from '../../components/SmallSupermanLoader';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -240,7 +242,7 @@ export const EditProfileScreen = ({ navigation, route }) => {
           onPress={handleSave}
           disabled={loading}
         >
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnRedText}>Save Changes</Text>}
+          {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Save Changes</Text>}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -248,13 +250,16 @@ export const EditProfileScreen = ({ navigation, route }) => {
 };
 
 import { useFocusEffect } from '@react-navigation/native';
+import { useLoading } from '../../contexts/LoadingContext';
 
 export const SettingsScreen = ({ navigation, route }) => {
   const [user, setUser] = useState(route.params?.user || { name: 'Guest', blood_group: 'N/A', city: 'Unknown' });
+  const { showLoading, hideLoading } = useLoading();
 
   useFocusEffect(
     React.useCallback(() => {
       const loadUser = async () => {
+        showLoading();
         try {
           const userData = await AsyncStorage.getItem('user');
           if (userData) {
@@ -264,6 +269,8 @@ export const SettingsScreen = ({ navigation, route }) => {
           }
         } catch (e) {
           console.log('Failed to load user', e);
+        } finally {
+          setTimeout(hideLoading, 1500);
         }
       };
       loadUser();

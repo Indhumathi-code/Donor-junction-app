@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, API_URL } from '../constants/theme';
+import SupermanLoader from '../components/SupermanLoader';
+import { useLoading } from '../contexts/LoadingContext';
 
 const fetchWithTimeout = (url, options = {}, timeout = 1200) => {
   return Promise.race([
@@ -188,6 +190,7 @@ const MyPostsScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loggedInMobile, setLoggedInMobile] = useState('');
   const [loggedInName, setLoggedInName] = useState('');
+  const { showLoading, hideLoading } = useLoading();
 
   const isOwnPost = (postMobile, postTitle) => {
     const cleanP = postMobile ? String(postMobile).replace(/[^0-9]/g, '').slice(-10) : '';
@@ -213,6 +216,7 @@ const MyPostsScreen = ({ navigation, route }) => {
   }, [navigation, route.params?.refreshTrigger]);
 
   const loadPosts = async () => {
+    showLoading();
     let filterMobile = '';
     let parsedName = '';
     try {
@@ -322,6 +326,9 @@ const MyPostsScreen = ({ navigation, route }) => {
       // Offline fallback already populated
     } finally {
       setLoading(false);
+      setTimeout(() => {
+        hideLoading();
+      }, 1500);
     }
   };
 
@@ -422,7 +429,7 @@ const MyPostsScreen = ({ navigation, route }) => {
       {/* Main Content Area */}
       <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
         {loading ? (
-          <ActivityIndicator size="large" color={COLORS.PRIMARY} style={{ marginTop: 50 }} />
+          <SupermanLoader text="Fetching your posts..." />
         ) : (
           <FlatList
             data={posts}

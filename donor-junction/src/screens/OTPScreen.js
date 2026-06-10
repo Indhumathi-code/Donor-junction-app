@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
+import SmallSupermanLoader from '../components/SmallSupermanLoader';
 
 const fetchWithTimeout = (url, options = {}, timeout = 5000) => {
   return Promise.race([
@@ -86,7 +87,7 @@ const OTPScreen = ({ navigation, route }) => {
           onPress={handleVerify}
           disabled={loading}
         >
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnRedText}>Verify & Continue</Text>}
+          {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Verify & Continue</Text>}
         </TouchableOpacity>
 
         <TouchableOpacity

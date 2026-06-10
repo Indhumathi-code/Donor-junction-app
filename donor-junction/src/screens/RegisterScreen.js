@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
+import SmallSupermanLoader from '../components/SmallSupermanLoader';
 import * as Location from 'expo-location';
 
 const fetchWithTimeout = (url, options = {}, timeout = 5000) => {
@@ -222,7 +223,7 @@ const RegisterScreen = ({ navigation, route }) => {
           onPress={handleRegister}
           disabled={loading}
         >
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnRedText}>Complete Registration</Text>}
+          {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Complete Registration</Text>}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

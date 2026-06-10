@@ -7,6 +7,7 @@ import { COLORS, API_URL } from '../constants/theme';
 import MapView, { Marker, PROVIDER_GOOGLE } from '../components/MapModule';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
+import { useLoading } from '../contexts/LoadingContext';
 
 const TN_ZONES = [
   { name: 'Chennai Central', lat: 13.0827, lng: 80.2707 },
@@ -21,6 +22,7 @@ const MapScreen = ({ navigation, route }) => {
   const [currentZone] = useState(() => TN_ZONES[0]); // Default to Chennai Central so seeded markers are visible
   const [districtName, setDistrictName] = useState(currentZone.name);
   const mapRef = useRef(null);
+  const { showLoading, hideLoading } = useLoading();
 
   const initialLat = user?.latitude || currentZone.lat;
   const initialLng = user?.longitude || currentZone.lng;
@@ -159,9 +161,22 @@ const MapScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      showLoading();
+      setTimeout(hideLoading, 1500);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
     const getLiveLocation = async () => {
-      await fetchMarkers();
-      await triggerExactLocation();
+      showLoading();
+      try {
+        await fetchMarkers();
+        await triggerExactLocation();
+      } finally {
+        hideLoading();
+      }
     };
     getLiveLocation();
   }, []);

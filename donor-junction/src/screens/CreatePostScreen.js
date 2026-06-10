@@ -7,6 +7,7 @@ import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
+import SmallSupermanLoader from '../components/SmallSupermanLoader';
 
 const fetchWithTimeout = (url, options = {}, timeout = 5000) => {
   return Promise.race([
@@ -254,7 +255,7 @@ const CreatePostScreen = ({ navigation }) => {
           )}
 
           <TouchableOpacity style={[styles.btnRed, { marginTop: 30, marginBottom: 40 }]} onPress={handleSubmit} disabled={loading}>
-            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnRedText}>Submit Post</Text>}
+            {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Submit Post</Text>}
           </TouchableOpacity>
         </ScrollView>
       </View>

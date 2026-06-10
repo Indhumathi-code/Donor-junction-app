@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLoading } from '../contexts/LoadingContext';
 
 const ChatScreen = ({ navigation, route }) => {
   const user = route.params?.user || { name: 'Donor' };
@@ -13,9 +14,11 @@ const ChatScreen = ({ navigation, route }) => {
   const [threads, setThreads] = useState([]);
 
   const [currentUser, setCurrentUser] = useState(user);
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
+      showLoading();
       try {
         const storedUser = await AsyncStorage.getItem('user');
         if (storedUser) {
@@ -23,6 +26,8 @@ const ChatScreen = ({ navigation, route }) => {
         }
       } catch (e) {
         // Ignore
+      } finally {
+        setTimeout(hideLoading, 1500); // Wait for the animation to finish
       }
     });
     return unsubscribe;

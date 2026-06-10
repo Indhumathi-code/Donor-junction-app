@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
+import SmallSupermanLoader from '../components/SmallSupermanLoader';
 
 const fetchWithTimeout = (url, options = {}, timeout = 1200) => {
   return Promise.race([
@@ -103,7 +104,7 @@ const ScheduleScreen = ({ route, navigation }) => {
           onPress={handleConfirm}
           disabled={loading}
         >
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnRedText}>Confirm Donation</Text>}
+          {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Confirm Donation</Text>}
         </TouchableOpacity>
 
         <TouchableOpacity

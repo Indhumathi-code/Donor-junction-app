@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, API_URL } from '../constants/theme';
+import SupermanLoader from '../components/SupermanLoader'; // IMPORTED THE NEW LOADER HERE
 
 const fetchWithTimeout = (url, options = {}, timeout = 1200) => {
   return Promise.race([
@@ -198,12 +199,17 @@ const PostCard = ({ item, loggedInMobile, loggedInName, isOwnPost, handleDeleteP
   );
 };
 
+// Removed useLoading import from here
+
+import { useLoading } from '../contexts/LoadingContext';
+
 const PostsScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [loggedInMobile, setLoggedInMobile] = useState('');
   const [loggedInName, setLoggedInName] = useState('');
+  const { showLoading, hideLoading } = useLoading();
 
   const isOwnPost = (postMobile, postTitle) => {
     const cleanP = postMobile ? String(postMobile).replace(/[^0-9]/g, '').slice(-10) : '';
@@ -276,7 +282,10 @@ const PostsScreen = ({ navigation, route }) => {
     // Merge fallback with local posts
     const fallbackCombined = [...activeLocal, ...filteredFallbacks];
     setPosts(fallbackCombined);
+    
+    // START LOADING ANIMATION
     setLoading(true);
+    showLoading();
 
     try {
       let url = `${API_URL}/get_posts.php`;
@@ -304,7 +313,11 @@ const PostsScreen = ({ navigation, route }) => {
     } catch (error) {
       // Offline fallback already populated
     } finally {
+      // END LOADING ANIMATION
       setLoading(false);
+      setTimeout(() => {
+        hideLoading();
+      }, 1500);
     }
   };
 
@@ -403,7 +416,7 @@ const PostsScreen = ({ navigation, route }) => {
       {/* Main Content Area */}
       <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
         {loading ? (
-          <ActivityIndicator size="large" color={COLORS.PRIMARY} style={{ marginTop: 50 }} />
+          <SupermanLoader text="Fetching latest posts..." />
         ) : (
           <FlatList
             data={posts}

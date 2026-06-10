@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, SafeAreaView, Switch, StyleSheet, Alert, 
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, API_URL } from '../../constants/theme';
+import SmallSupermanLoader from '../../components/SmallSupermanLoader';
 import * as Location from 'expo-location';
 
 const LocationSettingsScreen = ({ navigation }) => {
@@ -110,7 +111,7 @@ const LocationSettingsScreen = ({ navigation }) => {
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            <SmallSupermanLoader />
           ) : (
             <>
               <Ionicons name="locate" size={20} color="#fff" style={{ marginRight: 10 }} />

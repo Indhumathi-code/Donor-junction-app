@@ -7,6 +7,7 @@ import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
 import { Badge, Card } from '../components/common/CommonComponents';
 import { nutritionTips } from '../data/nutritionTipsData';
+import { useLoading } from '../contexts/LoadingContext';
 
 const { width } = Dimensions.get('window');
 
@@ -14,6 +15,7 @@ const HomeScreen = ({ navigation, route }) => {
   const [user, setUser] = useState(route.params?.user || { name: 'Guest', blood_group: 'N/A', city: 'Unknown' });
   const [campaignsCount, setCampaignsCount] = useState(0);
   const [urgentCampaign, setUrgentCampaign] = useState(null);
+  const { showLoading, hideLoading } = useLoading();
 
   const carouselRef = useRef(null);
   const currentIndexRef = useRef(0);
@@ -32,6 +34,7 @@ const HomeScreen = ({ navigation, route }) => {
 
   const loadCampaignStats = async () => {
     try {
+      showLoading();
       const storedUser = await AsyncStorage.getItem('user');
       const parsedUser = storedUser ? JSON.parse(storedUser) : null;
       const cityFilter = parsedUser?.city?.toLowerCase()?.trim() || '';
@@ -72,6 +75,10 @@ const HomeScreen = ({ navigation, route }) => {
       }
     } catch (error) {
       console.error('❌ HomeScreen: loadCampaignStats error:', error);
+    } finally {
+      setTimeout(() => {
+        hideLoading();
+      }, 1500);
     }
   };
 

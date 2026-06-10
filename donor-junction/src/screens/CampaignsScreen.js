@@ -5,12 +5,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
 import { Badge } from '../components/common/CommonComponents';
+import SupermanLoader from '../components/SupermanLoader';
+
+import { useLoading } from '../contexts/LoadingContext';
 
 const CampaignsScreen = ({ navigation, route }) => {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [detailVisible, setDetailVisible] = useState(false);
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     loadCampaigns();
@@ -23,6 +27,7 @@ const CampaignsScreen = ({ navigation, route }) => {
   const loadCampaigns = async () => {
     try {
       setLoading(true);
+      showLoading();
       const response = await fetch(`${API_URL}/get_campaigns.php`);
       const resData = await response.json();
 
@@ -33,6 +38,9 @@ const CampaignsScreen = ({ navigation, route }) => {
       console.error('CampaignsScreen error:', error);
     } finally {
       setLoading(false);
+      setTimeout(() => {
+        hideLoading();
+      }, 1500);
     }
   };
 
@@ -87,7 +95,7 @@ const CampaignsScreen = ({ navigation, route }) => {
       <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
         <StatusBar barStyle="light-content" backgroundColor={COLORS.PRIMARY} />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size="large" color={COLORS.PRIMARY} />
+          <SupermanLoader text="Fetching campaigns..." />
         </View>
       </SafeAreaView>
     );

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '../../constants/theme';
+import SmallSupermanLoader from '../../components/SmallSupermanLoader';
 
 const EditProfileScreen = ({ navigation, route }) => {
   const [formData, setFormData] = useState(route.params?.user || {});
@@ -133,7 +134,7 @@ const EditProfileScreen = ({ navigation, route }) => {
           onPress={handleSave}
           disabled={loading}
         >
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnRedText}>Save Changes</Text>}
+          {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Save Changes</Text>}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
