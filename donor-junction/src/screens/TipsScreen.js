@@ -127,7 +127,6 @@ const TipsScreen = ({ navigation }) => {
           </View>
         </SafeAreaView>
       </Modal>
-      </View>
     </SafeAreaView>
   );
 };
