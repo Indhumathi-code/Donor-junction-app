@@ -62,6 +62,7 @@ const TipsScreen = ({ navigation }) => {
           })}
         </ScrollView>
       </View>
+      </View>
 
       {/* Full Screen Details Modal */}
       <Modal
