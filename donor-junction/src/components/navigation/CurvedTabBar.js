@@ -15,12 +15,12 @@ const rightEndX = (width / 2) + CURVE_RADIUS + 15;
 const getPath = (bottomInset) => {
   const totalHeight = TAB_HEIGHT + bottomInset;
   const center = width / 2;
-  // Draw the SVG path starting from -width to 2*width so it can slide left and right
+  // Deep cutout curve
   return `
     M ${-width} 0
-    L ${center - 60} 0
-    C ${center - 25} 0, ${center - 25} 55, ${center} 55
-    C ${center + 25} 55, ${center + 25} 0, ${center + 60} 0
+    L ${center - 45} 0
+    C ${center - 25} 0, ${center - 25} 45, ${center} 45
+    C ${center + 25} 45, ${center + 25} 0, ${center + 45} 0
     L ${width * 2} 0
     L ${width * 2} ${totalHeight}
     L ${-width} ${totalHeight}
@@ -32,7 +32,7 @@ const CurvedTabBar = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
   const bottomInset = Math.max(insets.bottom, 15);
   const tabWidth = width / state.routes.length;
-  
+
   const translateX = useSharedValue(0);
 
   useEffect(() => {
@@ -51,30 +51,34 @@ const CurvedTabBar = ({ state, descriptors, navigation }) => {
   // Get active icon name for the floating circle
   const activeRoute = state.routes[state.index];
   let activeIconName = '';
-  if (activeRoute.name === 'Home') activeIconName = 'home';
-  else if (activeRoute.name === 'Map') activeIconName = 'location';
-  else if (activeRoute.name === 'Blog') activeIconName = 'document-text';
-  else if (activeRoute.name === 'Chat') activeIconName = 'chatbubble';
-  else if (activeRoute.name === 'Settings') activeIconName = 'person';
+  if (activeRoute.name === 'Home') activeIconName = 'home-outline';
+  else if (activeRoute.name === 'Map') activeIconName = 'location-outline';
+  else if (activeRoute.name === 'Blog') activeIconName = 'document-text-outline';
+  else if (activeRoute.name === 'Chat') activeIconName = 'chatbubble-outline';
+  else if (activeRoute.name === 'Settings') activeIconName = 'person-outline';
 
   return (
     <View style={styles.container}>
       {/* Animated SVG Background */}
       <Animated.View style={[StyleSheet.absoluteFillObject, animatedStyle]}>
-        <Svg 
-          width={width * 3} 
-          height={TAB_HEIGHT + bottomInset} 
+        <Svg
+          width={width * 3}
+          height={TAB_HEIGHT + bottomInset}
           viewBox={`${-width} 0 ${width * 3} ${TAB_HEIGHT + bottomInset}`}
           style={{ position: 'absolute', left: -width }}
         >
-          <Path d={getPath(bottomInset)} fill="#FFFFFF" stroke="rgba(0,0,0,0.03)" strokeWidth="1" />
+          {/* Subtle Shadow Path */}
+          <Path d={getPath(bottomInset)} fill="none" stroke="rgba(0,0,0,0.1)" strokeWidth="6" />
+          {/* Main White Path */}
+          <Path d={getPath(bottomInset)} fill="#FFFFFF" />
         </Svg>
       </Animated.View>
 
       {/* Floating Active Circle */}
-      <Animated.View style={[styles.activeCircleWrapper, { bottom: bottomInset + 15 }, animatedStyle]}>
+      {/* Circle sits in the cutout. bottomInset + 20 places its bottom 20px above the screen bottom. */}
+      <Animated.View style={[styles.activeCircleWrapper, { bottom: bottomInset + 20 }, animatedStyle]}>
         <View style={styles.activeCircle}>
-           <Ionicons name={activeIconName} size={28} color="#FFFFFF" />
+          <Ionicons name={activeIconName} size={28} color="#FFFFFF" />
         </View>
       </Animated.View>
 
@@ -82,7 +86,7 @@ const CurvedTabBar = ({ state, descriptors, navigation }) => {
       <View style={[styles.tabContainer, { paddingBottom: bottomInset, height: TAB_HEIGHT + bottomInset }]}>
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
-          
+
           let iconName = '';
           if (route.name === 'Home') iconName = 'home';
           else if (route.name === 'Map') iconName = 'location';
@@ -132,17 +136,13 @@ const styles = StyleSheet.create({
     pointerEvents: 'none', // Let clicks pass through to tab buttons below
   },
   activeCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: COLORS.PRIMARY,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: COLORS.PRIMARY,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 8,
+    // Removed drop shadow to match the flat red circle in the sample image
   },
   tabContainer: {
     flexDirection: 'row',
