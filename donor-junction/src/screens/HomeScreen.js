@@ -107,31 +107,40 @@ const HomeScreen = ({ navigation, route }) => {
   }, []);
 
 
+  const { showLoadingLocked } = useLoading();
+
+  const handleNavigation = (screenName) => {
+    showLoadingLocked(2000);
+    setTimeout(() => {
+      navigation.navigate(screenName);
+    }, 1800);
+  };
+
   const shortcuts = [
     {
       label: 'Health Tips',
       image: require('../assets/images/health_tips_icon.png'),
-      onPress: () => navigation.navigate('Tips'),
+      onPress: () => handleNavigation('Tips'),
     },
     {
       label: 'Chat',
       image: require('../assets/images/chat_icon.png'),
-      onPress: () => navigation.navigate('Chat'),
+      onPress: () => handleNavigation('Chat'),
     },
     {
       label: 'Find Donor',
       image: require('../assets/images/find_donor_icon.png'),
-      onPress: () => navigation.navigate('Map'),
+      onPress: () => handleNavigation('Map'),
     },
     {
       label: 'Post',
       image: require('../assets/images/post_icon.png'),
-      onPress: () => navigation.navigate('Posts'),
+      onPress: () => handleNavigation('Posts'),
     },
     {
       label: 'Certification',
       image: require('../assets/images/certification_icon.png'),
-      onPress: () => navigation.navigate('Certificates'),
+      onPress: () => handleNavigation('Certificates'),
     },
   ];
 

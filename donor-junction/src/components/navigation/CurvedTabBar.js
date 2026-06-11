@@ -28,10 +28,13 @@ const getPath = (bottomInset) => {
   `;
 };
 
+import { useLoading } from '../../contexts/LoadingContext';
+
 const CurvedTabBar = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
   const bottomInset = Math.max(insets.bottom, 15);
   const tabWidth = width / state.routes.length;
+  const { showLoading, hideLoading, showLoadingLocked } = useLoading();
 
   const translateX = useSharedValue(0);
 
@@ -97,7 +100,10 @@ const CurvedTabBar = ({ state, descriptors, navigation }) => {
           const onPress = () => {
             const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
             if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
+              showLoadingLocked(2000);
+              setTimeout(() => {
+                navigation.navigate(route.name);
+              }, 1800);
             }
           };
 

@@ -5,16 +5,16 @@ import { useFonts } from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import AppNavigator from './navigation/AppNavigator';
 import { LoadingProvider, useLoading } from './contexts/LoadingContext';
+import { GlobalLoader } from './components/common/GlobalLoader';
 
 // Component that consumes the LoadingContext and renders the overlay
 function AppContent() {
-  const { isLoading } = useLoading();
-
   return (
     <View style={{ flex: 1 }}>
       <NavigationContainer>
         <AppNavigator />
       </NavigationContainer>
+      <GlobalLoader />
     </View>
   );
 }
