@@ -8,10 +8,13 @@ export const GlobalLoader = () => {
   
   const player = useVideoPlayer(require('../../assets/videos/loader.mp4'), player => {
     player.loop = true;
+    player.muted = true;
   });
 
   React.useEffect(() => {
     if (isLoading && player) {
+      player.muted = true;
+      player.volume = 0;
       player.currentTime = 0;
       player.play();
     }

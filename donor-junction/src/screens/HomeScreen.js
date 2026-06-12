@@ -160,25 +160,49 @@ const HomeScreen = ({ navigation, route }) => {
         paddingBottom: 15,
         backgroundColor: '#FFFFFF',
       }}>
-        <View>
-          <Text style={{
-            color: '#8E8E93',
-            fontSize: 12,
-            fontWeight: 'bold',
-            letterSpacing: 0.5,
-            textTransform: 'uppercase',
-            marginBottom: 2
-          }}>
-            Welcome
-          </Text>
-          <Text style={{
-            color: '#000000',
-            fontSize: 22,
-            fontWeight: 'bold',
-          }}>
-            {(user.name || 'guest').toLowerCase()}{' '}
-            <Text style={{ color: '#DA0037' }}>{user.blood_group || 'N/A'}</Text>
-          </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => navigation.navigate('MainTabs', { screen: 'Settings' })}>
+            <View style={{
+              width: 50,
+              height: 50,
+              borderRadius: 25,
+              backgroundColor: '#FFEAEA',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginRight: 12,
+              borderWidth: 2,
+              borderColor: '#DA0037',
+              overflow: 'hidden'
+            }}>
+              {user.profile_image ? (
+                <Image source={{ uri: user.profile_image }} style={{ width: '100%', height: '100%' }} />
+              ) : (
+                <Text style={{ color: '#DA0037', fontWeight: 'bold', fontSize: 18 }}>
+                  {user.name ? user.name[0].toUpperCase() : 'U'}
+                </Text>
+              )}
+            </View>
+          </TouchableOpacity>
+          <View>
+            <Text style={{
+              color: '#8E8E93',
+              fontSize: 12,
+              fontWeight: 'bold',
+              letterSpacing: 0.5,
+              textTransform: 'uppercase',
+              marginBottom: 2
+            }}>
+              Welcome
+            </Text>
+            <Text style={{
+              color: '#000000',
+              fontSize: 22,
+              fontWeight: 'bold',
+            }}>
+              {(user.name || 'guest').toLowerCase()}{' '}
+              <Text style={{ color: '#DA0037' }}>{user.blood_group || 'N/A'}</Text>
+            </Text>
+          </View>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
           <View style={{ position: 'relative', padding: 4 }}>

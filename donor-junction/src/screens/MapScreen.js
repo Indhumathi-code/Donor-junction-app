@@ -199,16 +199,22 @@ const MapScreen = ({ navigation, route }) => {
     return R * c; // Distance in km
   };
 
+  const distances = markers.map(m => getDistanceFromLatLonInKm(region.latitude, region.longitude, m.lat, m.lng));
+  const minDistance = distances.length > 0 ? Math.min(...distances) : 0;
+  const bypassRadiusFilter = minDistance > 200;
+
   const activeMarkers = markers.filter(marker => {
-    // 10km radius zone filter
-    const distance = getDistanceFromLatLonInKm(
-      region.latitude,
-      region.longitude,
-      marker.lat,
-      marker.lng
-    );
-    if (distance > 10) {
-      return false;
+    if (!bypassRadiusFilter) {
+      // 10km radius zone filter for local users
+      const distance = getDistanceFromLatLonInKm(
+        region.latitude,
+        region.longitude,
+        marker.lat,
+        marker.lng
+      );
+      if (distance > 10) {
+        return false;
+      }
     }
 
     if (selectedFilter === 'donors') {
@@ -218,7 +224,7 @@ const MapScreen = ({ navigation, route }) => {
       return marker.type === 'hospital';
     }
     return true;
-  }); // Filter markers based on selection and 10km radius
+  }); // Filter markers based on selection and radius
 
 
   return (
