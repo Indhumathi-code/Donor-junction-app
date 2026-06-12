@@ -22,6 +22,7 @@ import { SettingsScreen, EditProfileScreen, CertificatesScreen, NotificationsScr
 import CreatePostScreen from '../screens/CreatePostScreen';
 import MyPostsScreen from '../screens/MyPostsScreen';
 import CampaignsScreen from '../screens/CampaignsScreen';
+import AddCertificateScreen from '../screens/settings/AddCertificateScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -35,6 +36,7 @@ const MainTabs = ({ route }) => (
     screenOptions={{
       headerShown: false,
     }}
+    sceneContainerStyle={{ backgroundColor: 'transparent' }}
   >
     <Tab.Screen name="Blog" component={BlogScreen} />
     <Tab.Screen name="Home" component={HomeScreen} initialParams={{ user: route.params?.user }} />
@@ -64,6 +66,7 @@ const AppNavigator = () => (
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     <Stack.Screen name="MyPosts" component={MyPostsScreen} />
     <Stack.Screen name="Campaigns" component={CampaignsScreen} />
+    <Stack.Screen name="AddCertificate" component={AddCertificateScreen} initialParams={{ API_URL }} />
     
     <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
     <Stack.Screen name="Schedule" component={ScheduleScreen} />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StatusBar, Alert, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StatusBar, Alert, ActivityIndicator, Platform } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -173,7 +174,13 @@ const CreatePostScreen = ({ navigation }) => {
           <Text style={[styles.topBarTitle, { flex: 1, marginLeft: 15 }]}>Create Blood Post</Text>
         </View>
 
-        <ScrollView style={{ padding: 20 }}>
+        <KeyboardAwareScrollView 
+          style={{ flex: 1 }} 
+          contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+          enableOnAndroid={true}
+          keyboardShouldPersistTaps="handled"
+          extraScrollHeight={20}
+        >
           <Text style={styles.label}>Post Category *</Text>
           <View style={[styles.genderRow, { marginBottom: 15 }]}>
             <TouchableOpacity style={category === 'donor' ? styles.genderBtnActive : styles.genderBtn} onPress={() => setCategory('donor')}>
@@ -257,7 +264,7 @@ const CreatePostScreen = ({ navigation }) => {
           <TouchableOpacity style={[styles.btnRed, { marginTop: 30, marginBottom: 40 }]} onPress={handleSubmit} disabled={loading}>
             {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Submit Post</Text>}
           </TouchableOpacity>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
     </SafeAreaView>
   );

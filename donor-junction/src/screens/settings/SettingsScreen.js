@@ -6,7 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
-import { COLORS } from '../../constants/theme';
+import { COLORS, API_URL as GLOBAL_API_URL } from '../../constants/theme';
 import SmallSupermanLoader from '../../components/SmallSupermanLoader';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,24 +14,90 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width } = Dimensions.get('window');
 const PRIMARY_COLOR = '#DA0037';
 
-export const CertificatesScreen = ({ navigation }) => (
-  <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-    <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
-    <View style={{ flex: 1, backgroundColor: '#EAEAEA' }}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.topBarTitle}>My Certificates</Text>
+export const CertificatesScreen = ({ navigation, route }) => {
+  const [certificates, setCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const API_URL = route.params?.API_URL || GLOBAL_API_URL; // Fallback to global config
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadCerts = async () => {
+        try {
+          const userData = await AsyncStorage.getItem('user');
+          if (userData) {
+            const user = JSON.parse(userData);
+            const response = await fetch(`${API_URL}/get_certificates.php?mobile=${user.mobile}`);
+            const text = await response.text();
+            if (text) {
+              const res = JSON.parse(text);
+              if (res.status === 'success' && res.data) {
+                setCertificates(res.data);
+              }
+            }
+          }
+        } catch (e) {
+          console.log('Error fetching certs', e);
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadCerts();
+    }, [API_URL])
+  );
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
+      <View style={{ flex: 1, backgroundColor: '#EAEAEA' }}>
+        <View style={styles.topBar}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 15 }}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.topBarTitle}>My Certificates</Text>
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate('AddCertificate', { API_URL })}>
+            <Ionicons name="add" size={28} color="#fff" />
+          </TouchableOpacity>
+        </View>
+
+        {loading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <SmallSupermanLoader />
+          </View>
+        ) : certificates.length === 0 ? (
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <Ionicons name="ribbon-outline" size={80} color={PRIMARY_COLOR} style={{ marginTop: 50 }} />
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>No certificates yet</Text>
+            <Text style={{ color: '#999', textAlign: 'center', marginTop: 10 }}>Donate blood to earn certificates and badges!</Text>
+          </View>
+        ) : (
+          <ScrollView style={{ padding: 15 }}>
+            {certificates.map((cert) => (
+              <View key={cert.id} style={{ backgroundColor: '#fff', padding: 15, borderRadius: 10, marginBottom: 15, elevation: 2 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                  <Ionicons name="ribbon" size={30} color={PRIMARY_COLOR} />
+                  <View style={{ marginLeft: 15, flex: 1 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#333' }}>{cert.title}</Text>
+                    <Text style={{ fontSize: 13, color: '#666', marginTop: 2 }}>Issued by {cert.issued_by}</Text>
+                    <Text style={{ fontSize: 12, color: '#999', marginTop: 2 }}>{cert.date}</Text>
+                  </View>
+                </View>
+                {cert.image_uri ? (
+                  <Image
+                    source={{ uri: cert.image_uri }}
+                    style={{ width: '100%', height: 150, borderRadius: 8, marginTop: 10, resizeMode: 'cover' }}
+                  />
+                ) : null}
+              </View>
+            ))}
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        )}
       </View>
-      <View style={{ padding: 20, alignItems: 'center' }}>
-        <Ionicons name="ribbon-outline" size={80} color={PRIMARY_COLOR} style={{ marginTop: 50 }} />
-        <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>No certificates yet</Text>
-        <Text style={{ color: '#999', textAlign: 'center', marginTop: 10 }}>Donate blood to earn certificates and badges!</Text>
-      </View>
-    </View>
-  </SafeAreaView>
-);
+    </SafeAreaView>
+  );
+};
 
 export const LocationSettingsScreen = ({ navigation }) => {
   const [useLocation, setUseLocation] = useState(true);
@@ -65,10 +131,12 @@ export const LocationSettingsScreen = ({ navigation }) => {
       <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
       <View style={{ flex: 1, backgroundColor: '#EAEAEA' }}>
         <View style={styles.topBar}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.topBarTitle}>Location Settings</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 15 }}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.topBarTitle}>Location Settings</Text>
+          </View>
         </View>
         <View style={{ padding: 20 }}>
           <View style={styles.settingsRow}>
@@ -101,10 +169,12 @@ export const NotificationsScreen = ({ navigation }) => {
       <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
       <View style={{ flex: 1, backgroundColor: '#EAEAEA' }}>
         <View style={styles.topBar}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.topBarTitle}>Notifications</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 15 }}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.topBarTitle}>Notifications</Text>
+          </View>
         </View>
         <ScrollView style={{ padding: 15 }} contentContainerStyle={notifications.length === 0 ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : {}}>
           {notifications.length === 0 ? (
@@ -190,10 +260,12 @@ export const EditProfileScreen = ({ navigation, route }) => {
       <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
       <View style={{ flex: 1, backgroundColor: '#EAEAEA' }}>
         <View style={styles.topBar}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.topBarTitle}>Edit Profile</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 15 }}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.topBarTitle}>Edit Profile</Text>
+          </View>
         </View>
         <ScrollView style={{ padding: 20 }}>
           <View style={{ alignItems: 'center', marginBottom: 20 }}>
@@ -337,6 +409,9 @@ export const SettingsScreen = ({ navigation, route }) => {
       <ScrollView
         style={{ flex: 1, zIndex: 10 }}
         contentContainerStyle={{ paddingTop: 100, paddingHorizontal: 20, alignItems: 'center', paddingBottom: 100 }}
+        scrollEnabled={false}
+        bounces={false}
+        showsVerticalScrollIndicator={false}
       >
         {/* Profile Avatar sitting exactly at the peak of the curve */}
         <View style={styles.avatarWrapper}>
@@ -363,7 +438,7 @@ export const SettingsScreen = ({ navigation, route }) => {
             <View style={styles.ringOuterLeft} />
             <View style={styles.ringInnerLeft} />
             <View style={styles.redCoreLeft} />
-            <Text style={[styles.statNumber, { color: PRIMARY_COLOR }]}>{postCount === 0 ? "11" : postCount}</Text>
+            <Text style={[styles.statNumber, { color: PRIMARY_COLOR }]}>{postCount}</Text>
             <Text style={styles.statLabel}>Post</Text>
           </View>
           <View style={styles.statCard}>
@@ -382,7 +457,7 @@ export const SettingsScreen = ({ navigation, route }) => {
             <Text style={styles.menuText}>Post</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('Certificates')}>
+          <TouchableOpacity style={styles.menuCard} onPress={() => navigation.navigate('Certificates', { API_URL })}>
             <MaterialCommunityIcons name="certificate-outline" size={48} color={PRIMARY_COLOR} style={styles.menuIcon} />
             <Text style={styles.menuText}>Certification</Text>
           </TouchableOpacity>
@@ -404,7 +479,14 @@ export const SettingsScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: PRIMARY_COLOR },
-  topBar: { backgroundColor: PRIMARY_COLOR, padding: 20, paddingTop: 15 },
+  topBar: {
+    backgroundColor: PRIMARY_COLOR,
+    padding: 15,
+    paddingTop: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
   topBarTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   topBarSub: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 },
 

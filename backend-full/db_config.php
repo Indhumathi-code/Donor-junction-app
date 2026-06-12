@@ -7,7 +7,7 @@ error_reporting(0);
 ini_set('display_errors', 0);
 
 $host = "127.0.0.1";
-$port = "3303";
+$port = "3306";
 $db_name = "donor_junction";
 $username = "root";
 $password = "";

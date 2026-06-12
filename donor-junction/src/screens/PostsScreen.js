@@ -221,7 +221,7 @@ const PostsScreen = ({ navigation, route }) => {
       (loggedInName && String(postTitle).toLowerCase() === String(loggedInName).toLowerCase())
     );
 
-    return matchesMobile || matchesName;
+    return Boolean(matchesMobile || matchesName);
   };
 
   useEffect(() => {

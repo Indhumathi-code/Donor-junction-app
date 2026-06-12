@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image, Modal, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image, Modal, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { nutritionTips } from '../data/nutritionTipsData';
@@ -7,14 +7,10 @@ import { nutritionTips } from '../data/nutritionTipsData';
 const TipsScreen = ({ navigation }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
-
-
   return (
-    <SafeAreaView style={[styles.container, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%', backgroundColor: '#DA0037' }]} edges={['top', 'right', 'bottom', 'left']}>
+    <SafeAreaView style={[styles.container, { flex: 1, backgroundColor: '#DA0037' }]} edges={['top', 'right', 'bottom', 'left']}>
       <StatusBar barStyle="light-content" backgroundColor="#fcfcfcff" />
-
       <View style={{ flex: 1, backgroundColor: '#FFF9FA' }}>
-        {/* Top Header */}
         <View style={[styles.header, { backgroundColor: '#fdfdfdff', borderBottomWidth: 0 }]}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
             <Ionicons name="arrow-back" size={24} color="#DA0037" />
@@ -23,9 +19,7 @@ const TipsScreen = ({ navigation }) => {
           <View style={{ width: 24 }} />
         </View>
 
-        {/* Main Content Area */}
         <View style={{ flex: 1, backgroundColor: '#faf7f7ff' }}>
-          {/* Main List View */}
           <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingVertical: 15 }}>
             {nutritionTips.map((item) => {
               const isRemoteUrl = typeof item.image === 'string' && (item.image.startsWith('http://') || item.image.startsWith('https://'));
@@ -38,7 +32,7 @@ const TipsScreen = ({ navigation }) => {
                   onPress={() => setSelectedItem(item)}
                   activeOpacity={0.85}
                 >
-                  <View style={[styles.cardImageContainer, isLocalAsset && { backgroundColor: '#F9FAFB' }]}>
+                  <View style={[styles.cardImageContainer, isLocalAsset ? { backgroundColor: '#F9FAFB' } : {}]}>
                     <Image
                       source={imageSrc}
                       style={styles.cardImage}
@@ -64,28 +58,24 @@ const TipsScreen = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Full Screen Details Modal */}
       <Modal
         visible={selectedItem !== null}
         animationType="slide"
         transparent={false}
         onRequestClose={() => setSelectedItem(null)}
       >
-        <SafeAreaView style={[styles.modalOverlay, { flex: 1, height: '100%', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, width: '100%', backgroundColor: '#DA0037' }]} edges={['top', 'right', 'bottom', 'left']}>
-          {/* Modal Header */}
+        <SafeAreaView style={[styles.modalOverlay, { flex: 1, backgroundColor: '#DA0037' }]} edges={['top', 'right', 'bottom', 'left']}>
           <View style={[styles.modalHeader, { backgroundColor: '#DA0037', borderBottomWidth: 0 }]}>
             <TouchableOpacity onPress={() => setSelectedItem(null)} style={styles.modalBackBtn}>
               <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
             </TouchableOpacity>
             <Text style={[styles.modalHeaderTitle, { color: '#FFFFFF' }]}>Health Tips</Text>
-            <View style={{ width: 24 }} /> {/* Balancer */}
+            <View style={{ width: 24 }} />
           </View>
 
-          {/* Modal Content Area */}
           <View style={{ flex: 1, backgroundColor: '#fdfdfdff' }}>
-            {selectedItem && (
+            {!!selectedItem && (
               <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-                {/* Centered Image */}
                 <View style={styles.detailImageContainer}>
                   {(() => {
                     const isModalRemoteUrl = typeof selectedItem.image === 'string' && (selectedItem.image.startsWith('http://') || selectedItem.image.startsWith('https://'));
@@ -100,22 +90,17 @@ const TipsScreen = ({ navigation }) => {
                   })()}
                 </View>
 
-                {/* Title */}
                 <Text style={styles.detailTitle}>{selectedItem.name}</Text>
 
-                {/* Description Paragraphs */}
                 <View style={styles.paragraphsContainer}>
-                  {/* Teaser */}
                   <Text style={styles.paragraphText}>{selectedItem.teaser}</Text>
 
-                  {/* Key Nutrients */}
                   <View style={styles.nutrientBar}>
                     <Ionicons name="nutrition" size={18} color={selectedItem.badgeColor} style={{ marginRight: 8 }} />
                     <Text style={styles.nutrientLabel}>Key Nutrients: </Text>
                     <Text style={styles.nutrientVal}>{selectedItem.nutrient}</Text>
                   </View>
 
-                  {/* Benefits as Paragraphs */}
                   {selectedItem.benefits.map((benefit, idx) => (
                     <Text key={idx} style={styles.paragraphText}>
                       {benefit}
@@ -169,7 +154,6 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 1,
     borderColor: '#F3EAEB',
-    // Shadow
     shadowColor: '#DA0037',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
@@ -234,7 +218,6 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     lineHeight: 15,
   },
-  // Modal styles
   modalOverlay: {
     flex: 1,
     backgroundColor: '#FFF9FA',
@@ -269,7 +252,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#FFFFFF',
     overflow: 'hidden',
-    // Subtle shadow
     shadowColor: '#DA0037',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,

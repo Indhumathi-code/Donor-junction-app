@@ -110,3 +110,14 @@ INSERT INTO messages (donor_id, org_mobile, message_text, is_me) VALUES
 ('4', '9840012345', 'Please bring any government ID card like Aadhaar or driving license.', 1),
 ('4', '9840012345', 'Sure, I will make sure to bring my Aadhaar card. See you there!', 0);
 
+-- Table for user certificates
+CREATE TABLE IF NOT EXISTS certificates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    mobile VARCHAR(20) NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    issued_by VARCHAR(150) NOT NULL,
+    date VARCHAR(50) NOT NULL,
+    image_uri TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

@@ -147,7 +147,7 @@ const HomeScreen = ({ navigation, route }) => {
   const itemWidth = (width - 70) / 3;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: '#FFFFFF' }]} edges={['right', 'bottom', 'left']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#f8f8f8' }]} edges={['right', 'bottom', 'left']}>
       {isFocused && <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />}
 
       {/* Top Header */}
@@ -222,7 +222,7 @@ const HomeScreen = ({ navigation, route }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={{ flex: 1, backgroundColor: '#FFFFFF' }} contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView style={{ flex: 1, backgroundColor: '#f8f8f8' }} contentContainerStyle={{ paddingBottom: 100 }}>
         {/* Carousel */}
         <ScrollView
           ref={carouselRef}

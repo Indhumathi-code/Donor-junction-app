@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StatusBar, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StatusBar, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../styles/globalStyles';
@@ -137,7 +138,13 @@ const RegisterScreen = ({ navigation, route }) => {
         <Text style={styles.topBarTitle}>Create profile</Text>
         <Text style={styles.topBarSub}>One-time registration</Text>
       </View>
-      <ScrollView style={{ flex: 1, padding: 20 }}>
+      <KeyboardAwareScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+        enableOnAndroid={true}
+        keyboardShouldPersistTaps="handled"
+        extraScrollHeight={20}
+      >
         <Text style={styles.label}>Full name</Text>
         <TextInput
           style={styles.inputField}
@@ -225,7 +232,7 @@ const RegisterScreen = ({ navigation, route }) => {
         >
           {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Complete Registration</Text>}
         </TouchableOpacity>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };

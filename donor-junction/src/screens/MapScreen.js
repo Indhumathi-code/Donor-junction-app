@@ -40,58 +40,68 @@ const MapScreen = ({ navigation, route }) => {
       // Fetch Blood Posts
       const postsRes = await fetch(`${API_URL}/get_posts.php`).catch(() => null);
       if (postsRes) {
-        const res = await postsRes.json();
-        if (res.status === 'success' && res.data) {
-          for (let p of res.data) {
-            let lat = p.latitude ? parseFloat(p.latitude) : null;
-            let lng = p.longitude ? parseFloat(p.longitude) : null;
+        try {
+          const text = await postsRes.text();
+          const res = text ? JSON.parse(text) : {};
+          if (res.status === 'success' && res.data) {
+            for (let p of res.data) {
+              let lat = p.latitude ? parseFloat(p.latitude) : null;
+              let lng = p.longitude ? parseFloat(p.longitude) : null;
 
-            if ((!lat || !lng) && p.location) {
-              try {
-                const geo = await Location.geocodeAsync(p.location);
-                if (geo && geo.length > 0) {
-                  lat = geo[0].latitude;
-                  lng = geo[0].longitude;
+              if ((!lat || !lng) && p.location) {
+                try {
+                  const geo = await Location.geocodeAsync(p.location);
+                  if (geo && geo.length > 0) {
+                    lat = geo[0].latitude;
+                    lng = geo[0].longitude;
+                  }
+                } catch (e) {
+                  // Ignore
                 }
-              } catch (e) {
-                // Ignore
+              }
+
+              if (lat && lng) {
+                dbMarkers.push({
+                  id: `post_${p.id}`,
+                  title: p.title || 'Unknown Donor',
+                  address: p.location,
+                  blood: `${p.blood_group} (${p.units_needed || '1 unit'})`,
+                  lat: lat,
+                  lng: lng,
+                  type: p.category === 'donor' ? 'donor' : 'donor' // Display blood posts as donors
+                });
               }
             }
-
-            if (lat && lng) {
-              dbMarkers.push({
-                id: `post_${p.id}`,
-                title: p.title || 'Unknown Donor',
-                address: p.location,
-                blood: `${p.blood_group} (${p.units_needed || '1 unit'})`,
-                lat: lat,
-                lng: lng,
-                type: p.category === 'donor' ? 'donor' : 'donor' // Display blood posts as donors
-              });
-            }
           }
+        } catch (e) {
+          console.warn("Error parsing posts data:", e);
         }
       }
 
       // Fetch Hospitals / Blood Banks
       const locsRes = await fetch(`${API_URL}/get_locations.php`).catch(() => null);
       if (locsRes) {
-        const res = await locsRes.json();
-        if (res.status === 'success' && res.locations) {
-          for (let loc of res.locations) {
-            if (loc.latitude && loc.longitude) {
-              dbMarkers.push({
-                id: `loc_${loc.id}`,
-                title: loc.name,
-                address: loc.address,
-                blood: loc.category || 'Hospital',
-                lat: parseFloat(loc.latitude),
-                lng: parseFloat(loc.longitude),
-                type: loc.type === 'user' ? 'donor' : 'hospital',
-                mobile: loc.mobile
-              });
+        try {
+          const text = await locsRes.text();
+          const res = text ? JSON.parse(text) : {};
+          if (res.status === 'success' && res.locations) {
+            for (let loc of res.locations) {
+              if (loc.latitude && loc.longitude) {
+                dbMarkers.push({
+                  id: `loc_${loc.id}`,
+                  title: loc.name,
+                  address: loc.address,
+                  blood: loc.category || 'Hospital',
+                  lat: parseFloat(loc.latitude),
+                  lng: parseFloat(loc.longitude),
+                  type: loc.type === 'user' ? 'donor' : 'hospital',
+                  mobile: loc.mobile
+                });
+              }
             }
           }
+        } catch (e) {
+          console.warn("Error parsing locations data:", e);
         }
       }
     } catch (e) {
@@ -104,10 +114,18 @@ const MapScreen = ({ navigation, route }) => {
     try {
       await fetchMarkers();
       let { status } = await Location.requestForegroundPermissionsAsync();
+      let loc = null;
       if (status === 'granted') {
-        let loc = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High
-        });
+        try {
+          loc = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.High
+          });
+        } catch (err) {
+          console.warn("Could not get live location:", err);
+        }
+      }
+
+      if (loc) {
         const newRegion = {
           latitude: loc.coords.latitude,
           longitude: loc.coords.longitude,

@@ -30,7 +30,7 @@ export default function AnimatedBloodLoader({ visible, onFinish }) {
           }),
           Animated.timing(flyY, {
             toValue: -600,
-            duration: 1500, // Faster loop
+            duration: 1000, // Faster loop
             easing: Easing.linear,
             useNativeDriver: true,
           }),

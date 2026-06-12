@@ -180,7 +180,7 @@ const CampaignsScreen = ({ navigation, route }) => {
                   </View>
                 </View>
 
-                {selectedCampaign.date && (
+                {!!selectedCampaign.date && (
                   <View style={campaignStyles.modalSection}>
                     <Text style={campaignStyles.sectionLabel}>Date & Time</Text>
                     <Text style={campaignStyles.descriptionText}>{selectedCampaign.date}</Text>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StatusBar, ActivityIndicator, Alert } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../styles/globalStyles';
 import { COLORS, API_URL } from '../constants/theme';
@@ -56,7 +57,12 @@ const LoginScreen = ({ navigation }) => {
         <Text style={styles.topBarTitle}>Login</Text>
         <Text style={styles.topBarSub}>Enter your mobile number</Text>
       </View>
-      <View style={{ padding: 20 }}>
+      <KeyboardAwareScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+        enableOnAndroid={true}
+        keyboardShouldPersistTaps="handled"
+      >
         <Text style={styles.label}>Mobile number</Text>
         <View style={styles.inputContainer}>
           <Text style={{ color: '#aaa', fontSize: 16 }}>+91 </Text>
@@ -85,7 +91,7 @@ const LoginScreen = ({ navigation }) => {
         >
           <Text style={styles.btnGrayText}>Back</Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };

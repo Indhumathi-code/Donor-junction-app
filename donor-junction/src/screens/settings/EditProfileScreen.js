@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, SafeAreaView, ScrollView, ActivityIndicator, Image, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, Alert, StyleSheet, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -58,14 +60,21 @@ const EditProfileScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topBar}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.PRIMARY }} edges={['top', 'left', 'right']}>
+      <View style={styles.container}>
+        <View style={styles.topBar}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 10 }}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.topBarTitle}>Edit Profile</Text>
       </View>
-      <ScrollView style={{ padding: 20 }}>
+      <KeyboardAwareScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+        enableOnAndroid={true}
+        keyboardShouldPersistTaps="handled"
+        extraScrollHeight={20}
+      >
         <View style={{ alignItems: 'center', marginBottom: 20 }}>
           <TouchableOpacity onPress={pickImage} style={styles.avatarCircleLarge}>
             {formData.profile_image ? (
@@ -136,7 +145,8 @@ const EditProfileScreen = ({ navigation, route }) => {
         >
           {loading ? <SmallSupermanLoader /> : <Text style={styles.btnRedText}>Save Changes</Text>}
         </TouchableOpacity>
-      </ScrollView>
+        </KeyboardAwareScrollView>
+      </View>
     </SafeAreaView>
   );
 };

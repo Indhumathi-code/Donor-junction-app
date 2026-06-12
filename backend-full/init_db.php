@@ -5,7 +5,7 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
 
 $host = "127.0.0.1";
-$port = "3303";
+$port = "3306";
 $username = "root";
 $password = "";
 
@@ -173,6 +173,17 @@ try {
             ('4', '9840012345', 'Sure, I will make sure to bring my Aadhaar card. See you there!', 0)
         ");
     }
+
+    // Create certificates table
+    $conn->exec("CREATE TABLE IF NOT EXISTS certificates (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        mobile VARCHAR(20) NOT NULL,
+        title VARCHAR(150) NOT NULL,
+        issued_by VARCHAR(150) NOT NULL,
+        date VARCHAR(50) NOT NULL,
+        image_uri TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
     // Re-enable foreign key checks
     $conn->exec("SET FOREIGN_KEY_CHECKS = 1");
